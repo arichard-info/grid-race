@@ -2,7 +2,7 @@
   import Canvas from "./components/Canvas";
   import Background from "./components/Background";
   import LineGrid from "./components/LineGrid";
-  import Track from "./components/Track";
+  import Track from "./components/NewTrack";
   import Car from "./components/Car";
 
   import {
@@ -13,6 +13,7 @@
   } from "./utils";
   import { caseSize, trackOffset } from "./state/canvas";
   import { tick } from "svelte";
+  import track from "./tracks/track-1.json";
 
   let canvasComponent;
 
@@ -65,16 +66,16 @@
   bind:this={canvasComponent}
 >
   <Background color="hsl(0, 0%, 10%)">
-    <LineGrid />
+    <Track {track}>
+      <LineGrid />
+      {#each cars as car, index (car)}
+        <Car
+          id={car.id}
+          vectors={car.vectors}
+          start={car.start}
+          bind:this={cars[index].component}
+        />
+      {/each}
+    </Track>
   </Background>
-  <Track>
-    {#each cars as car, index (car)}
-      <Car
-        id={car.id}
-        vectors={car.vectors}
-        start={car.start}
-        bind:this={cars[index].component}
-      />
-    {/each}
-  </Track>
 </Canvas>
