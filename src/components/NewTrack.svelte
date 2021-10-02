@@ -11,6 +11,7 @@
     height as canvasHeight,
     registerRender,
     trackOffset,
+    pixelRatio
   } from "./../state/canvas";
 
   export let cols = 50;
@@ -21,7 +22,7 @@
 
   const render = () => {
     const DOMURL = window.URL || window.webkitURL || window;
-    const size = $caseSize * track.blockSize;
+    const size = $caseSize * track.blockSize * $pixelRatio;
 
     track.blocks.forEach((block, index) => {
       if (mounted) {

@@ -4,6 +4,7 @@
     context,
     caseSize,
     trackOffset,
+    pixelRatio
   } from "./../state/canvas";
 
   export let vectors = [];
@@ -18,15 +19,15 @@
 
   const drawLines = (newVectors) => {
     $context.beginPath();
-    $context.moveTo(position[0] * $caseSize, position[1] * $caseSize);
+    $context.moveTo(position[0] * $caseSize * $pixelRatio, position[1] * $caseSize * $pixelRatio);
     newVectors.forEach(([x, y]) => {
       const newPos = [position[0] + x, position[1] + y];
-      $context.lineTo(newPos[0] * $caseSize, newPos[1] * $caseSize);
+      $context.lineTo(newPos[0] * $caseSize * $pixelRatio, newPos[1] * $caseSize * $pixelRatio);
       position = newPos;
     });
 
     $context.strokeStyle = "#FF0000";
-    $context.lineWidth = 2;
+    $context.lineWidth = 2 * $pixelRatio;
     $context.stroke();
   };
 

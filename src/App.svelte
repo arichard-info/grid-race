@@ -36,11 +36,8 @@
     },
   ];
 
-  const forceRender = () => {
-    canvasComponent.render();
-  };
-
   const handleClick = async (e) => {
+    console.log("click")
     const destination = pixelToPosition([e.offsetX, e.offsetY], $caseSize);
     const trackDestionation = positionDifference(destination, $trackOffset);
     const carPosition = vectorsToPosition(cars[0].vectors, cars[0].start);
@@ -49,9 +46,8 @@
     const acceleration = positionDifference(newVector, lastVector);
 
     if (isAccelerationValid(acceleration)) {
+
       cars[0].vectors = [...cars[0].vectors, newVector];
-      await tick();
-      forceRender();
     }
   };
 

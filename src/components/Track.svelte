@@ -6,6 +6,7 @@
   import {
     context,
     caseSize,
+    pixelRatio,
     width as canvasWidth,
     height as canvasHeight,
     registerRender,
@@ -46,12 +47,12 @@
       const url = DOMURL.createObjectURL(svg);
 
       img.onload = function () {
-        const width = cols * $caseSize;
+        const width = cols * $caseSize * $pixelRatio;
         const height = (width * img.height) / img.width;
         rows = Math.ceil(height / $caseSize);
 
-        const canvasCols = Math.ceil($canvasWidth / $caseSize);
-        const canvasRows = Math.ceil($canvasHeight / $caseSize);
+        const canvasCols = Math.ceil(($canvasWidth / $pixelRatio) / $caseSize);
+        const canvasRows = Math.ceil(($canvasHeight / $pixelRatio) / $caseSize);
 
         trackOffset.set([
           Math.floor((canvasCols - cols) / 2),
@@ -60,8 +61,8 @@
 
         $context.drawImage(
           img,
-          $trackOffset[0] * $caseSize,
-          $trackOffset[1] * $caseSize,
+          $trackOffset[0] * $caseSize * $pixelRatio,
+          $trackOffset[1] * $caseSize * $pixelRatio,
           width,
           height
         );
@@ -82,8 +83,8 @@
       ]);
       $context.drawImage(
         img,
-        $trackOffset[0] * $caseSize,
-        $trackOffset[1] * $caseSize,
+        $trackOffset[0] * $caseSize * $pixelRatio,
+        $trackOffset[1] * $caseSize * $pixelRatio,
         width,
         height
       );
