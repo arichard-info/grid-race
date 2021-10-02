@@ -1,4 +1,4 @@
-import { onMount } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { writable } from "svelte/store";
 
 // Some props for the app
@@ -13,9 +13,20 @@ export const time = writable(0);
 
 export const renderer = writable([]);
 
+let renderCount = 1;
 export const registerRender = (render) => {
+  const renderId = `render-${renderCount}`;
   onMount(() => {
-    render();
-    renderer.update((renders) => [...renders, render]);
+    renderer.update((renders) => ({
+      ...renders,
+      [renderId]: render,
+    }));
   });
+  onDestroy(() => {
+    renderer.update((renders) => {
+      delete renders[renderId];
+      return renders;
+    });
+  });
+  renderCount++;
 };

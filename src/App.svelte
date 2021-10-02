@@ -2,8 +2,10 @@
   import Canvas from "./components/Canvas";
   import Background from "./components/Background";
   import LineGrid from "./components/LineGrid";
+  import DotGrid from "./components/DotGrid";
   import Track from "./components/NewTrack";
   import Car from "./components/Car";
+  import FPS from "./components/FPS";
 
   import {
     positionDifference,
@@ -12,10 +14,7 @@
     isAccelerationValid,
   } from "./utils";
   import { caseSize, trackOffset } from "./state/canvas";
-  import { tick } from "svelte";
   import track from "./tracks/track-1.json";
-
-  let canvasComponent;
 
   let cars = [
     {
@@ -37,7 +36,6 @@
   ];
 
   const handleClick = async (e) => {
-    console.log("click")
     const destination = pixelToPosition([e.offsetX, e.offsetY], $caseSize);
     const trackDestionation = positionDifference(destination, $trackOffset);
     const carPosition = vectorsToPosition(cars[0].vectors, cars[0].start);
@@ -46,7 +44,6 @@
     const acceleration = positionDifference(newVector, lastVector);
 
     if (isAccelerationValid(acceleration)) {
-
       cars[0].vectors = [...cars[0].vectors, newVector];
     }
   };
@@ -56,22 +53,14 @@
   };
 </script>
 
-<Canvas
-  on:click={handleClick}
-  on:mousemove={handleMouseMove}
-  bind:this={canvasComponent}
->
+<Canvas on:click={handleClick} on:mousemove={handleMouseMove}>
   <Background color="hsl(0, 0%, 10%)">
     <Track {track}>
-      <LineGrid />
+      <DotGrid />
       {#each cars as car, index (car)}
-        <Car
-          id={car.id}
-          vectors={car.vectors}
-          start={car.start}
-          bind:this={cars[index].component}
-        />
+        <Car id={car.id} vectors={car.vectors} start={car.start} />
       {/each}
     </Track>
+    <FPS />
   </Background>
 </Canvas>
