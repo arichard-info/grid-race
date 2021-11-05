@@ -1,6 +1,6 @@
 <script>
-  import Text from "./Text.svelte";
-  import { registerRender, width } from "./../state/canvas";
+  import Text from "./Commons/Text";
+  import { registerRender, width } from "./../../state/canvas";
 
   let text = "";
 

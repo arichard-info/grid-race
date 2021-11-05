@@ -3,7 +3,7 @@
 </script>
 
 <script>
-  import blocks from "./../tracks/blocks";
+  import blocks from "./../../tracks/blocks";
   import {
     context,
     caseSize,
@@ -11,8 +11,8 @@
     height as canvasHeight,
     registerRender,
     trackOffset,
-    pixelRatio
-  } from "./../state/canvas";
+    pixelRatio,
+  } from "./../../state/canvas";
 
   export let cols = 50;
   export let track;

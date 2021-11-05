@@ -8,7 +8,7 @@
     width as canvasWidth,
     height as canvasHeight,
     registerRender,
-  } from "./../state/canvas";
+  } from "./../../../state/canvas";
 
   const render = () => {
     $context.save();

@@ -4,8 +4,8 @@
     context,
     caseSize,
     trackOffset,
-    pixelRatio
-  } from "./../state/canvas";
+    pixelRatio,
+  } from "./../../state/canvas";
 
   export let vectors = [];
   export let start = [0, 0];
@@ -19,10 +19,16 @@
 
   const drawLines = (newVectors) => {
     $context.beginPath();
-    $context.moveTo(position[0] * $caseSize * $pixelRatio, position[1] * $caseSize * $pixelRatio);
+    $context.moveTo(
+      position[0] * $caseSize * $pixelRatio,
+      position[1] * $caseSize * $pixelRatio
+    );
     newVectors.forEach(([x, y]) => {
       const newPos = [position[0] + x, position[1] + y];
-      $context.lineTo(newPos[0] * $caseSize * $pixelRatio, newPos[1] * $caseSize * $pixelRatio);
+      $context.lineTo(
+        newPos[0] * $caseSize * $pixelRatio,
+        newPos[1] * $caseSize * $pixelRatio
+      );
       position = newPos;
     });
 

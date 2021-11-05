@@ -1,5 +1,5 @@
 <script>
-  import { context, width, height, registerRender } from "./../state/canvas";
+  import { context, width, height, registerRender } from "./../../state/canvas";
 
   export let color = "";
   let mounted = false;

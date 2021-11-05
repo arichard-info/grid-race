@@ -1,5 +1,5 @@
 <script>
-  import { registerRender, context } from "./../state/canvas";
+  import { registerRender, context } from "./../../../state/canvas";
 
   export let color = "hsl(0, 0%, 100%)";
   export let align = "center";

@@ -14,5 +14,9 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack serve --content-base public"
+  },
+  "dependencies": {
+    "path-match": "^1.2.4",
+    "query-string": "^7.0.1"
   }
 }

@@ -1,5 +1,5 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
 
   import {
     width,
@@ -9,7 +9,7 @@
     context as contextStore,
     renderer,
     time,
-  } from "./../state/canvas.js";
+  } from "./../../state/canvas.js";
 
   let canvas;
   let context;
