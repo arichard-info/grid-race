@@ -1,20 +1,20 @@
-<script>
-  import { context, width, height, registerRender } from "./../../state/canvas";
+<script lang="ts">
+    import { context, width, height, registerRender } from "../../state/canvas"
 
-  export let color = "";
-  let mounted = false;
+    export let color = ""
+    let mounted = false
 
-  const render = () => {
-    if (color) {
-      $context.fillStyle = color;
-      $context.fillRect(0, 0, $width, $height);
+    const render = () => {
+        if (color) {
+            $context.fillStyle = color
+            $context.fillRect(0, 0, $width, $height)
+        }
+        mounted = true
     }
-    mounted = true;
-  };
 
-  registerRender(render);
+    registerRender(render)
 </script>
 
 {#if mounted}
-  <slot />
+    <slot />
 {/if}

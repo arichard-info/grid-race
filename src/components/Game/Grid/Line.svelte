@@ -1,17 +1,12 @@
-<script context="module">
-  const img = new Image();
-  let localCaseSize;
+<script context="module" lang="ts">
+    const img = new Image()
+    let localCaseSize
 </script>
 
-<script>
-  import {
-    context,
-    caseSize,
-    registerRender,
-    pixelRatio,
-  } from "./../../../state/canvas";
+<script lang="ts">
+    import { context, caseSize, registerRender, pixelRatio } from "../../../state/canvas"
 
-  const getGridSvg = (size, strokeWidth) => `
+    const getGridSvg = (size, strokeWidth) => `
     <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <pattern id="grid" width="${size}" height="${size}" patternUnits="userSpaceOnUse">
@@ -19,28 +14,28 @@
             </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#grid)" />
-    </svg>`;
+    </svg>`
 
-  const render = () => {
-    if ($caseSize !== localCaseSize) {
-      const DOMURL = window.URL || window.webkitURL || window;
-      const gridSvg = getGridSvg($caseSize * $pixelRatio, $pixelRatio);
+    const render = () => {
+        if ($caseSize !== localCaseSize) {
+            const DOMURL = window.URL || window.webkitURL || window
+            const gridSvg = getGridSvg($caseSize * $pixelRatio, $pixelRatio)
 
-      const svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" });
-      const url = DOMURL.createObjectURL(svg);
+            const svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" })
+            const url = DOMURL.createObjectURL(svg)
 
-      img.onload = function () {
-        $context.drawImage(img, 0, 0);
-        DOMURL.revokeObjectURL(url);
-      };
-      img.src = url;
-      localCaseSize = $caseSize;
-    } else {
-      $context.drawImage(img, 0, 0);
+            img.onload = function () {
+                $context.drawImage(img, 0, 0)
+                DOMURL.revokeObjectURL(url)
+            }
+            img.src = url
+            localCaseSize = $caseSize
+        } else {
+            $context.drawImage(img, 0, 0)
+        }
     }
-  };
 
-  registerRender(render);
+    registerRender(render)
 </script>
 
 <slot />
