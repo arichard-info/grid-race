@@ -3,7 +3,7 @@ import { onDestroy, onMount } from "svelte"
 import { Writable, writable } from "svelte/store"
 
 // Some props for the app
-export const caseSize: Writable<number> = writable(20)
+export const caseSize: Writable<number> = writable(23)
 export const context: Writable<CanvasRenderingContext2D> = writable(null)
 export const width: Writable<number> = writable(window.innerWidth * window.devicePixelRatio)
 export const height: Writable<number> = writable(window.innerHeight * window.devicePixelRatio)

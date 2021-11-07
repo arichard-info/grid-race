@@ -51,7 +51,7 @@
 </script>
 
 <Canvas on:click={handleClick} on:mousemove={handleMouseMove}>
-    <Background color="hsl(0, 0%, 10%)">
+    <Background color="#E5E5E5">
         <Track {track}>
             <DotGrid />
             {#each cars as car, index (car)}

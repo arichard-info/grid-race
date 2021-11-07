@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let color = "grey"
+    export let color = "#3A3A3A"
 
     import {
         context,
@@ -18,7 +18,7 @@
             $context.beginPath()
             let drawnHeight = $caseSize * $pixelRatio
             while (drawnHeight < $canvasHeight) {
-                $context.arc(drawnWidth, drawnHeight, $pixelRatio * 1.5, 0, Math.PI * 2)
+                $context.arc(drawnWidth, drawnHeight, $pixelRatio * 1.25, 0, Math.PI * 2)
                 drawnHeight += $caseSize * $pixelRatio
             }
             drawnWidth += $caseSize * $pixelRatio
