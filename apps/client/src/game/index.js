@@ -50,10 +50,6 @@ export class Game {
         this.canvasElement.height = this.height;
         this.canvasElement.style.width = `${window.innerWidth}px`;
         this.canvasElement.style.height = `${window.innerHeight}px`;
-
-        // const translateRatio = (this.zoomLevel - 1) / 2;
-        // this.canvasCtx.translate(-this.width * translateRatio, -this.height * translateRatio);
-        // this.canvasCtx.scale(this.zoomLevel,this.zoomLevel);
     };
 
     #initCars = (players = []) => {
