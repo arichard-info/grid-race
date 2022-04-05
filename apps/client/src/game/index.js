@@ -86,9 +86,12 @@ export class Game {
             this.#render();
         }
 
+        document.body.style.cursor = "grabbing";
+        
         this.canvasElement.addEventListener('mousemove', onMouseMove);
 
         this.canvasElement.onmouseup = () => {
+            document.body.style.cursor = "default";
             this.canvasElement.removeEventListener('mousemove', onMouseMove);
             this.canvasElement.onmouseup = null;
         }
