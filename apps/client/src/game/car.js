@@ -1,11 +1,12 @@
 import { useTransition } from './utils/transition';
-import { getPositionFromVectors } from './utils/vector';
+import { getPositionFromVectors } from './../../../../libs/geometry/vector';
 
 const MAX_ANIMATION_DURATION = 300;
 
 export class Car {
     constructor(player) {
         this.playerName = player.name;
+        this.color = player.color || 'red';
         this.vectors = player.vectors;
         this.startPosition = player.startPosition;
         this.position = getPositionFromVectors(this.startPosition, this.vectors);
@@ -34,11 +35,13 @@ export class Car {
         if (animate) this.setAnimation(newVector, this.vectors.length - 1);
     };
 
-    render = ({ canvasCtx, pixelRatio, scaledCaseSize, animate, track }) => {
+    render = ({ canvasCtx, pixelRatio, scaledCaseSize, animate, offsetX, offsetY }) => {
         let position = this.startPosition;
 
         canvasCtx.beginPath();
-        canvasCtx.moveTo(position[0] * scaledCaseSize + track.offsetWidth, position[1] * scaledCaseSize + track.offsetHeight);
+        const positionPx = [position[0] * scaledCaseSize + offsetX, position[1] * scaledCaseSize + offsetY];
+        canvasCtx.moveTo(...positionPx);
+        canvasCtx.arc(...positionPx, pixelRatio * 2, 0, Math.PI * 2);
         this.vectors.forEach(([x, y], index) => {
             const newPos = [position[0] + x, position[1] + y];
             let drawPos;
@@ -52,10 +55,12 @@ export class Car {
                 position = newPos;
             }
 
-            canvasCtx.lineTo((drawPos[0]) * scaledCaseSize  + track.offsetWidth, (drawPos[1]) * scaledCaseSize + track.offsetHeight);
+            const drawPosPx = [drawPos[0] * scaledCaseSize + offsetX, drawPos[1] * scaledCaseSize + offsetY];
+            canvasCtx.lineTo(...drawPosPx);
+            canvasCtx.arc(...drawPosPx, pixelRatio * 2, 0, Math.PI * 2);
         });
 
-        canvasCtx.strokeStyle = '#FF0000';
+        canvasCtx.strokeStyle = this.color;
         canvasCtx.lineWidth = 2 * pixelRatio;
         canvasCtx.stroke();
     };

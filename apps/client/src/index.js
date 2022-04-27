@@ -10,6 +10,7 @@ import track from './../../../libs/game/tracks/track-001';
                 id: "player1",
                 name: 'Gounet',
                 startPosition: [4,2],
+                color: "green",
                 vectors: [
                     [1,0],
                     [2,1],

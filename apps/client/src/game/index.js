@@ -14,17 +14,20 @@ export class Game {
         this.canvasElement = config.canvas;
         this.canvasCtx = config.canvas.getContext('2d');
 
+        if (config.track) this.track = new Track({ ...config.track, theme: this.theme });
+
         this.dragging = false;
         this.theme = config.theme || 'light';
         this.zoomLevel = 1;
         this.caseSize = this.zoomLevel * Game.baseCaseSize;
-        this.offsetX = 0;
-        this.offsetY = 0;
-        if (config.track) this.track = new Track({ ...config.track, theme: this.theme });
 
         this.#initCars(config.players);
         this.#setSize();
         this.#setTime();
+
+        const offset = this.#getDefaultOffset(this.track);
+        this.offsetX = offset[0]
+        this.offsetY = offset[1];
 
         this.#render();
         this.canvasElement.addEventListener('mousedown', this.#drag);
@@ -39,6 +42,17 @@ export class Game {
         if (typeof config.listeners.click === 'function') {
             this.canvasElement.addEventListener('click', this.#handleClick(config.listeners.click));
         }
+    }
+
+    #getDefaultOffset = (track) => {
+        if(!track) return [0,0];
+
+        const unitOffsetWidth = Math.floor((this.unitWidth - track.unitWidth) / 2);
+        const unitOffsetHeight = Math.floor((this.unitHeight - track.unitHeight) / 2);
+
+        console.log("//", this.unitWidth)
+
+        return [(unitOffsetWidth * this.scaledCaseSize), (unitOffsetHeight * this.scaledCaseSize)];
     }
 
     #setTime = () => {
@@ -162,7 +176,7 @@ export class Game {
         }
         renderBackground(this);
         if (this.track) await this.track.render(this);
-        this.#renderCars();
         renderGrid(this);
+        this.#renderCars();
     };
 }
