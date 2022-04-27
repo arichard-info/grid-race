@@ -9,11 +9,11 @@ import track from './../../../libs/game/tracks/track-001';
             {
                 id: "player1",
                 name: 'Gounet',
-                startPosition: [2,2],
+                startPosition: [4,2],
                 vectors: [
                     [1,0],
-                    [1,1],
-                    [1,2]
+                    [2,1],
+                    [3,0]
                 ]
             },
         ],

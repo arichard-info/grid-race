@@ -34,11 +34,11 @@ export class Car {
         if (animate) this.setAnimation(newVector, this.vectors.length - 1);
     };
 
-    render = ({ canvasCtx, pixelRatio, scaledCaseSize, animate }) => {
+    render = ({ canvasCtx, pixelRatio, scaledCaseSize, animate, track }) => {
         let position = this.startPosition;
 
         canvasCtx.beginPath();
-        canvasCtx.moveTo(position[0] * scaledCaseSize, position[1] * scaledCaseSize);
+        canvasCtx.moveTo(position[0] * scaledCaseSize + track.offsetWidth, position[1] * scaledCaseSize + track.offsetHeight);
         this.vectors.forEach(([x, y], index) => {
             const newPos = [position[0] + x, position[1] + y];
             let drawPos;
@@ -52,7 +52,7 @@ export class Car {
                 position = newPos;
             }
 
-            canvasCtx.lineTo(drawPos[0] * scaledCaseSize, drawPos[1] * scaledCaseSize);
+            canvasCtx.lineTo((drawPos[0]) * scaledCaseSize  + track.offsetWidth, (drawPos[1]) * scaledCaseSize + track.offsetHeight);
         });
 
         canvasCtx.strokeStyle = '#FF0000';
