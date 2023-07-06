@@ -13,10 +13,12 @@ export class Car {
     }
 
     setAnimation = (vector, index) => {
-        const vectorSize = Math.ceil(vector[0]) + Math.ceil(vector[1]);
+        const vectorSize = Math.abs(vector[0]) + Math.abs(vector[1]);
         const duration = vectorSize * 50;
         this.lineAnimation = {
-            getProgress: useTransition({ duration: duration < MAX_ANIMATION_DURATION ? duration : MAX_ANIMATION_DURATION }),
+            getProgress: useTransition({
+                duration: duration < MAX_ANIMATION_DURATION ? duration : MAX_ANIMATION_DURATION,
+            }),
             vectorIndex: index,
         };
     };

@@ -16,6 +16,7 @@ export class Game {
 
         if (config.track) this.track = new Track({ ...config.track, theme: this.theme });
 
+        this.draggable = config.draggable || false;
         this.dragging = false;
         this.theme = config.theme || 'light';
         this.zoomLevel = 1;
@@ -26,11 +27,13 @@ export class Game {
         this.#setTime();
 
         const offset = this.#getDefaultOffset(this.track);
-        this.offsetX = offset[0]
+        this.offsetX = offset[0];
         this.offsetY = offset[1];
 
         this.#render();
-        this.canvasElement.addEventListener('mousedown', this.#drag);
+
+        if (this.draggable) this.canvasElement.addEventListener('mousedown', this.#drag);
+        this.canvasElement.addEventListener('wheel', this.#wheel);
         window.addEventListener(
             'resize',
             () => {
@@ -45,15 +48,13 @@ export class Game {
     }
 
     #getDefaultOffset = (track) => {
-        if(!track) return [0,0];
+        if (!track) return [0, 0];
 
         const unitOffsetWidth = Math.floor((this.unitWidth - track.unitWidth) / 2);
         const unitOffsetHeight = Math.floor((this.unitHeight - track.unitHeight) / 2);
 
-        console.log("//", this.unitWidth)
-
-        return [(unitOffsetWidth * this.scaledCaseSize), (unitOffsetHeight * this.scaledCaseSize)];
-    }
+        return [unitOffsetWidth * this.scaledCaseSize, unitOffsetHeight * this.scaledCaseSize];
+    };
 
     #setTime = () => {
         this.time = new Date();
@@ -62,15 +63,13 @@ export class Game {
     #setSize = () => {
         this.pixelRatio = window.devicePixelRatio || 1;
         this.scaledCaseSize = this.caseSize * this.pixelRatio;
-        this.width = window.innerWidth * this.pixelRatio;
-        this.height = window.innerHeight * this.pixelRatio;
+        this.width = this.canvasElement.clientWidth * this.pixelRatio;
+        this.height = this.canvasElement.clientHeight * this.pixelRatio;
         this.unitWidth = Math.floor(this.width / this.scaledCaseSize);
         this.unitHeight = Math.floor(this.height / this.scaledCaseSize);
 
         this.canvasElement.width = this.width;
         this.canvasElement.height = this.height;
-        this.canvasElement.style.width = `${window.innerWidth}px`;
-        this.canvasElement.style.height = `${window.innerHeight}px`;
     };
 
     #initCars = (players = []) => {
@@ -90,8 +89,8 @@ export class Game {
         const scaledX = x * this.pixelRatio;
         const scaledY = y * this.pixelRatio;
         const position = [
-            Math.round((scaledX - this.track.offsetWidth) / this.scaledCaseSize),
-            Math.round((scaledY - this.track.offsetHeight) / this.scaledCaseSize),
+            Math.round((scaledX - this.offsetX) / this.scaledCaseSize),
+            Math.round((scaledY - this.offsetY) / this.scaledCaseSize),
         ];
         return position;
     };
@@ -124,10 +123,22 @@ export class Game {
         };
     };
 
+    #wheel = (event) => {
+        if (event.deltaY > 0) this.unZoom();
+        if (event.deltaY < 0) this.zoom();
+    };
+
+    setDraggable = (draggable) => {
+        this.draggable = draggable;
+        if (this.draggable) this.canvasElement.addEventListener('mousedown', this.#drag);
+        else this.canvasElement.removeEventListener('mousedown', this.#drag);
+    };
+
     zoom = () => {
         if (this.zoomLevel + Game.zoomStep > Game.maxZoom) return;
         this.zoomLevel += Game.zoomStep;
         this.caseSize = Game.baseCaseSize * this.zoomLevel;
+
         this.#setSize();
         this.#render();
     };
@@ -136,6 +147,7 @@ export class Game {
         if (this.zoomLevel - Game.zoomStep < Game.minZoom) return;
         this.zoomLevel -= Game.zoomStep;
         this.caseSize = Game.baseCaseSize * this.zoomLevel;
+
         this.#setSize();
         this.#render();
     };
