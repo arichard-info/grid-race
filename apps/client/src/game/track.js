@@ -8,27 +8,21 @@ export class Track {
     }
 
     getSvg = (theme) => {
-        let fillColor = "#FFFFFF";
-        let strokeColor = "#000000";
-        if (theme === "dark") {
-            fillColor = "#000000";
-            strokeColor = "#FFFFFF";
+        let fillColor = '#FFFFFF';
+        let strokeColor = '#000000';
+        if (theme === 'dark') {
+            fillColor = '#000000';
+            strokeColor = '#FFFFFF';
         }
-        return this.svgTemplate.replace("{fill}", fillColor).replace("{stroke}", strokeColor);
-    }
+        return this.svgTemplate.replace('{fill}', fillColor).replace('{stroke}', strokeColor);
+    };
 
-    render = async ({ canvasCtx, unitHeight, unitWidth, scaledCaseSize, theme, offsetX, offsetY }) => {
+    render = async ({ canvasCtx, scaledCaseSize, theme, offsetX, offsetY }) => {
         const width = scaledCaseSize * this.unitWidth;
         const height = scaledCaseSize * this.unitHeight;
 
-        const unitOffsetWidth = Math.floor((unitWidth - this.unitWidth) / 2);
-        const unitOffsetHeight = Math.floor((unitHeight - this.unitHeight) / 2);
-
-        this.offsetWidth = (unitOffsetWidth * scaledCaseSize) + offsetX;
-        this.offsetHeight = (unitOffsetHeight * scaledCaseSize) + offsetY;
-
         if (this.images[this.id]?.[theme]) {
-            canvasCtx.drawImage(this.images[this.id][theme], this.offsetWidth, this.offsetHeight, width, height);
+            canvasCtx.drawImage(this.images[this.id][theme], offsetX, offsetY, width, height);
             return Promise.resolve(true);
         }
 
@@ -39,15 +33,15 @@ export class Track {
             const url = DOMURL.createObjectURL(svg);
 
             image.onload = () => {
-                canvasCtx.drawImage(image, this.offsetWidth, this.offsetHeight, width, height);
+                canvasCtx.drawImage(image, offsetX, offsetY, width, height);
                 DOMURL.revokeObjectURL(url);
                 resolve(true);
             };
             image.src = url;
             this.images[this.id] = {
                 ...(this.images[this.id] || {}),
-                [theme]: image
-            }
+                [theme]: image,
+            };
         });
     };
 }
