@@ -35,4 +35,4 @@ jobs:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   VOLTA_FEATURE_PNPM: 1
               run: |
-                  lerna version --conventional-commits --yes
+                  lerna version --conventional-commits --conventional-graduate --yes
