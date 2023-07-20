@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.9](https://github.com/arichard-info/grid-race/compare/canvas@1.0.8...canvas@1.0.9) (2023-07-20)
+
+**Note:** Version bump only for package canvas
+
+
+
+
+
 ## [1.0.8](https://github.com/arichard-info/grid-race/compare/canvas@1.0.7...canvas@1.0.8) (2023-07-20)
 
 **Note:** Version bump only for package canvas

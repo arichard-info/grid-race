@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.8](https://github.com/arichard-info/grid-race/compare/geometry@1.0.7...geometry@1.0.8) (2023-07-20)
+
+
+### Bug Fixes
+
+* add some comments ([03161aa](https://github.com/arichard-info/grid-race/commit/03161aa9abf5581f19f9a3beee437709f19fa87a))
+
+
+
+
+
 ## [1.0.7](https://github.com/arichard-info/grid-race/compare/geometry@1.0.6...geometry@1.0.7) (2023-07-20)
 
 

@@ -27,7 +27,7 @@ importers:
   libs/canvas:
     dependencies:
       geometry:
-        specifier: workspace:1.0.7
+        specifier: workspace:1.0.8
         version: link:../geometry
       tracks:
         specifier: workspace:1.0.6

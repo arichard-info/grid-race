@@ -1,7 +1,7 @@
 {
     "name": "canvas",
     "sideEffects": false,
-    "version": "1.0.8",
+    "version": "1.0.9",
     "main": "lib/index.js",
     "type": "module",
     "author": "",
@@ -13,7 +13,7 @@
         "demo:dev": "webpack serve --config demo/webpack.config.js"
     },
     "dependencies": {
-        "geometry": "workspace:1.0.7",
+        "geometry": "workspace:1.0.8",
         "tracks": "workspace:1.0.6"
     }
 }
