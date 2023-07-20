@@ -1,4 +1,5 @@
 /** @typedef {[number, number]} Position */
+
 /** @typedef {[number, number]} Vector */
 
 /**
