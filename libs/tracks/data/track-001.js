@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     id: 'track_001',
     name: 'Track 001',
     width: 30,

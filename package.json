@@ -2,10 +2,6 @@
   "name": "carrace2",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "client:build": "pnpm --filter client build",
-    "client:dev": "pnpm --filter client dev"
-  },
   "author": "",
   "license": "ISC",
   "keywords": [],
@@ -13,9 +9,7 @@
   "devDependencies": {
     "webpack": "^5.69.1",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.7.4"
-  },
-  "dependencies": {
+    "webpack-dev-server": "^4.7.4",
     "svg-path-to-polygons": "^0.1.0"
   }
 }

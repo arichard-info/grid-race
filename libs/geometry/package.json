@@ -1,0 +1,11 @@
+{
+    "name": "geometry",
+    "sideEffects": false,
+    "version": "1.0.0",
+    "main": "lib/index.js",
+    "type": "module",
+    "author": "",
+    "license": "ISC",
+    "keywords": [],
+    "description": "Geometry utils lib"
+}

@@ -1,5 +1,5 @@
 import { useTransition } from './utils/transition';
-import { getPositionFromVectors } from './../../../../libs/geometry/vector';
+import { getPositionFromVectors } from 'geometry/lib/vector';
 
 const MAX_ANIMATION_DURATION = 300;
 

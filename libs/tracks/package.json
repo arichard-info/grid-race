@@ -1,0 +1,11 @@
+{
+    "name": "tracks",
+    "sideEffects": false,
+    "version": "1.0.0",
+    "main": "index.js",
+    "type": "module",
+    "author": "",
+    "license": "ISC",
+    "keywords": [],
+    "description": "Tracks data lib"
+}

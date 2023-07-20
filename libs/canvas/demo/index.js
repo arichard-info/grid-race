@@ -1,12 +1,12 @@
-import { Game } from './game';
-import track from '../../../libs/game/tracks/track-001';
+import { Game } from './../lib/index.js';
+import track from 'tracks/data/track-001';
 
 (() => {
     let draggable = false;
 
     const game = new Game({
         canvas: document.getElementById('__game'),
-        track,
+        track: track,
         players: [
             {
                 id: 'player1',
