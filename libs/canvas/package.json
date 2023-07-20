@@ -13,7 +13,7 @@
         "demo:dev": "webpack serve --config demo/webpack.config.js"
     },
     "dependencies": {
-        "geometry": "workspace:*",
-        "tracks": "workspace:*"
+        "geometry": "workspace:1.0.7",
+        "tracks": "workspace:1.0.6"
     }
 }
