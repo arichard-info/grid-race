@@ -2,6 +2,7 @@
 /** @typedef {[number, number]} Vector */
 
 /**
+ * Get position from initial position and array of vectors
  * @param {Position} initial
  * @param {Vector[]} vectors
  * @returns {Position}
