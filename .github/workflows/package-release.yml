@@ -1,0 +1,16 @@
+name: Release packages on Merge to Master
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    publish:
+        name: Publish New Package Versions
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js with Volta
+              uses: volta-cli/action@v1
