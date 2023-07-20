@@ -3,7 +3,6 @@
     "npmClient": "pnpm",
     "command": {
         "version": {
-            "createRelease": "github",
             "conventionalCommits": true,
             "allowBranch": [
                 "master"
