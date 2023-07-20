@@ -1,4 +1,14 @@
 {
     "version": "independent",
-    "npmClient": "pnpm"
+    "npmClient": "pnpm",
+    "command": {
+        "version": {
+            "createRelease": "github",
+            "conventionalCommits": true,
+            "allowBranch": [
+                "master"
+            ],
+            "message": "chore(release): publish"
+        }
+    }
 }
