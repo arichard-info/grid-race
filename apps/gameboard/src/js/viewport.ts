@@ -33,9 +33,9 @@ class Viewport {
   }
 
   refresh() {
-    this.ctx.setTransform(window.devicePixelRatio || 1,0,0,window.devicePixelRatio || 1,0,0)
+    this.ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0)
     this.ctx.translate(this.center.x, this.center.y);
-    this.ctx.scale(1 / this.zoom , 1 / this.zoom );
+    this.ctx.scale(1 / this.zoom, 1 / this.zoom);
     const offset = this.getOffset();
     this.ctx.translate(offset.x, offset.y);
   }
@@ -102,7 +102,7 @@ class Viewport {
   #handleMouseWheel(event: WheelEvent) {
     event.preventDefault();
     if (event.ctrlKey) {
-      const dir = Math.sign((event ).deltaY);
+      const dir = Math.sign((event).deltaY);
       const step = 0.1;
       this.zoom += dir * step;
       this.zoom = Math.max(0.3, Math.min(1.5, this.zoom));
