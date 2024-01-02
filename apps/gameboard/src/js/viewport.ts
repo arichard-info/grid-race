@@ -19,7 +19,7 @@ class Viewport {
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     this.zoom = 1;
-    this.center = new Point(canvas.width / 2, canvas.height / 2);
+    this.center = new Point(canvas.width / 2 / window.devicePixelRatio, canvas.height / 2 / window.devicePixelRatio);
     this.offset = Point.scale(this.center, -1);
 
     this.drag = {
@@ -33,15 +33,11 @@ class Viewport {
   }
 
   refresh() {
-    this.ctx.restore();
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.save();
+    this.ctx.setTransform(window.devicePixelRatio || 1,0,0,window.devicePixelRatio || 1,0,0)
     this.ctx.translate(this.center.x, this.center.y);
-    this.ctx.scale(1 / this.zoom, 1 / this.zoom);
+    this.ctx.scale(1 / this.zoom , 1 / this.zoom );
     const offset = this.getOffset();
     this.ctx.translate(offset.x, offset.y);
-
-    //console.log(this);
   }
 
   getMouse(event: MouseEvent, subtractDragOffset = false) {
@@ -68,7 +64,7 @@ class Viewport {
 
   #addEventListeners() {
     this.canvas.addEventListener(
-      "mousewheel",
+      "wheel",
       this.#handleMouseWheel.bind(this)
     );
     this.canvas.addEventListener("mousedown", this.#handleMouseDown.bind(this));
@@ -103,11 +99,16 @@ class Viewport {
     }
   }
 
-  #handleMouseWheel(event: Event) {
-    const dir = Math.sign((event as WheelEvent).deltaY);
-    const step = 0.1;
-    this.zoom += dir * step;
-    this.zoom = Math.max(1, Math.min(5, this.zoom));
+  #handleMouseWheel(event: WheelEvent) {
+    event.preventDefault();
+    if (event.ctrlKey) {
+      const dir = Math.sign((event ).deltaY);
+      const step = 0.1;
+      this.zoom += dir * step;
+      this.zoom = Math.max(0.3, Math.min(1.5, this.zoom));
+    } else {
+      this.offset = Point.subtract(this.offset, new Point(event.deltaX * 2, event.deltaY * 2))
+    }
   }
 }
 

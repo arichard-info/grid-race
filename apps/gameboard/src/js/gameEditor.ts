@@ -5,7 +5,7 @@ import Viewport from "./viewport";
 
 const p1 = new Point(0, 0);
 const p2 = new Point(259, 485);
-const p3 = new Point(524, 483);
+const p3 = new Point(670, 430);
 
 class GameEditor {
   viewport: Viewport;

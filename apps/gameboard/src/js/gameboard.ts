@@ -9,7 +9,7 @@ class Gameboard {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    this.grid.render(ctx);
+   this.grid.render(ctx);
   }
 }
 
