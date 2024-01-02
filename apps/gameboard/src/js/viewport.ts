@@ -51,7 +51,7 @@ class Viewport {
     this.ctx.translate(offset.x, offset.y);
   }
 
-  getMouse(event: MouseEvent, subtractDragOffset = false) {
+  getMouse(event: MouseEvent, subtractDragOffset = false): Point {
     const p = new Point(
       (event.offsetX - this.center.x) * this.zoom - this.offset.x,
       (event.offsetY - this.center.y) * this.zoom - this.offset.y
@@ -59,18 +59,19 @@ class Viewport {
     return subtractDragOffset ? Point.subtract(p, this.drag.offset) : p;
   }
 
-  getOffset() {
+  getOffset(): Point {
     return Point.add(this.offset, this.drag.offset);
   }
 
-  getBoundings() {
+  getBoundings(): { left: number; right: number; top: number; bottom: number } {
     const offset = this.getOffset();
-    return [
-      -this.center.x * this.zoom - offset.x,
-      -this.center.y * this.zoom - offset.y,
-      (this.canvas.width - this.center.x) * this.zoom - offset.x,
-      (this.canvas.height - this.center.y) * this.zoom - offset.y,
-    ];
+
+    return {
+      left: -this.center.x * this.zoom - offset.x,
+      top: -this.center.y * this.zoom - offset.y,
+      right: (this.canvas.width - this.center.x) * this.zoom - offset.x,
+      bottom: (this.canvas.height - this.center.y) * this.zoom - offset.y,
+    };
   }
 
   #addEventListeners() {

@@ -13,12 +13,12 @@ class Grid {
 
   render(ctx: CanvasRenderingContext2D) {
     const boundings = this.viewport.getBoundings();
-    const minX = Math.ceil(boundings[0] / this.cellSize) * this.cellSize;
-    const minY = Math.ceil(boundings[1] / this.cellSize) * this.cellSize;
+    const minX = Math.ceil(boundings.left / this.cellSize) * this.cellSize;
+    const minY = Math.ceil(boundings.top / this.cellSize) * this.cellSize;
 
-    for (let x = minX; x < boundings[2]; x += this.cellSize) {
+    for (let x = minX; x < boundings.right; x += this.cellSize) {
       ctx.beginPath();
-      for (let y = minY; y < boundings[3]; y += this.cellSize) {
+      for (let y = minY; y < boundings.bottom; y += this.cellSize) {
         ctx.arc(x, y, this.dotSize / 2, 0, Math.PI * 2);
       }
       ctx.fillStyle = "#757575";

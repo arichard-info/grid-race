@@ -30,10 +30,10 @@ export const init = (rootElement: HTMLElement) => {
     ctx.fillStyle = "#E5E5E5";
     const boundings = viewport.getBoundings();
     ctx.fillRect(
-      boundings[0],
-      boundings[1],
-      boundings[2] - boundings[0],
-      boundings[3] - boundings[1]
+      boundings.left,
+      boundings.top,
+      boundings.right - boundings.left,
+      boundings.bottom - boundings.top
     );
 
     gameboard.render(ctx);
