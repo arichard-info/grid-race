@@ -1,30 +1,29 @@
-import Point from "./primitives/point";
 import Viewport from "./viewport";
 
 class Grid {
   viewport: Viewport;
+  cellSize: number;
+  dotSize: number;
 
-  constructor(viewport: Viewport) {
+  constructor(viewport: Viewport, { cellSize = 20, dotSize = 3 } = {}) {
     this.viewport = viewport;
+    this.cellSize = cellSize;
+    this.dotSize = dotSize;
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    //TODO : partir du centre plutôt que du coint en haut à gauche
-
-    const size = 3;
-    const rad = size / 2;
-
     const boundings = this.viewport.getBoundings();
-    const offset = this.viewport.getOffset();
-    for (let x = boundings[0] + (offset.x % 20); x < boundings[2]; x += 20) {
+    const minX = Math.ceil(boundings[0] / this.cellSize) * this.cellSize;
+    const minY = Math.ceil(boundings[1] / this.cellSize) * this.cellSize;
+
+    for (let x = minX; x < boundings[2]; x += this.cellSize) {
       ctx.beginPath();
-      for (let y = boundings[1] + (offset.y % 20); y < boundings[3]; y += 20) {
-        ctx.arc(x, y, rad, 0, Math.PI * 2);
+      for (let y = minY; y < boundings[3]; y += this.cellSize) {
+        ctx.arc(x, y, this.dotSize / 2, 0, Math.PI * 2);
       }
       ctx.fillStyle = "#757575";
       ctx.fill();
     }
-
   }
 }
 
