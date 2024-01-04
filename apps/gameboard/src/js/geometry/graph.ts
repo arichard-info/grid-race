@@ -5,7 +5,7 @@ class Graph {
   points: Point[];
   segments: Segment[];
 
-  constructor(points = [], segments = []) {
+  constructor(points: Point[] = [], segments: Segment[] = []) {
     this.points = points;
     this.segments = segments;
   }

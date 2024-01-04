@@ -42,6 +42,21 @@ class Point {
   static scale(p: Point, scaler: number): Point {
     return new Point(p.x * scaler, p.y * scaler);
   }
+
+  static translate(loc: Point, angle: number, offset: number): Point {
+    return new Point(
+      loc.x + Math.cos(angle) * offset,
+      loc.y + Math.sin(angle) * offset
+    );
+  }
+
+  static angle(p: Point): number {
+    return Math.atan2(p.y, p.x);
+  }
+
+  static average(p1: Point, p2: Point): Point {
+    return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+  }
 }
 
 export default Point;
