@@ -1,0 +1,12 @@
+{
+    "name": "grid-race",
+    "workspaces": [
+        "apps/client",
+        "apps/server",
+        "apps/gameboard"
+    ],
+    "scripts": {
+        "gameboard:dev": "npm run dev --workspace=gameboard",
+        "client:dev": "npm run dev --workspace=client"
+    }
+}

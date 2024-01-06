@@ -1,17 +1,12 @@
 import Gameboard from "./gameboard";
 import GameEditor from "./gameEditor";
 import Graph from "./geometry/graph";
-import Point from "./primitives/point";
-import Segment from "./primitives/segment";
 import Viewport from "./viewport";
 import FPS from "./fps";
 import Grid from "./grid";
 
 const loadGraph = () => {
-  const p1 = new Point(0, 0);
-  const p2 = new Point(259, 485);
-  const p3 = new Point(670, 430);
-  return new Graph([p1, p2, p3], [new Segment(p1, p2), new Segment(p2, p3)]);
+  return new Graph([], []);
 };
 
 export const init = (rootElement: HTMLElement) => {

@@ -76,7 +76,7 @@ class GameEditor {
         return;
       }
 
-      if (!this.canAddMouseSegment) return;
+      if (this.graph.segments.length && !this.canAddMouseSegment) return;
       const newPoint = this.viewport.getMouse(event);
       this.graph.addPoint(newPoint);
       if (this.selectedPoint) {
@@ -135,24 +135,29 @@ class GameEditor {
     this.graph.render(ctx);
 
     if (this.selectedPoint) {
-      if (this.mouse && this.graph.isExtrimity(this.selectedPoint)) {
-        const previewSegment = new Segment(this.selectedPoint, this.mouse);
-        previewSegment.render(ctx, { dash: [3, 3] });
+      if (this.mouse) {
+        if (
+          this.graph.isExtrimity(this.selectedPoint) ||
+          this.graph.points.length === 1
+        ) {
+          const previewSegment = new Segment(this.selectedPoint, this.mouse);
+          previewSegment.render(ctx, { dash: [3, 3] });
 
-        const envelopeStyle = {
-          fill: this.canAddMouseSegment
-            ? "rgba(71, 107, 237, 0.2)"
-            : "rgba(237, 71, 71, 0.2)",
-          stroke: this.canAddMouseSegment
-            ? "rgba(71, 107, 237)"
-            : "rgba(237, 71, 71)",
-        };
+          const envelopeStyle = {
+            fill: this.canAddMouseSegment
+              ? "rgba(71, 107, 237, 0.2)"
+              : "rgba(237, 71, 71, 0.2)",
+            stroke: this.canAddMouseSegment
+              ? "rgba(71, 107, 237)"
+              : "rgba(237, 71, 71)",
+          };
 
-        new Envelope(
-          previewSegment,
-          this.gameboard.roadWidth,
-          this.gameboard.roadRoundness
-        ).render(ctx, envelopeStyle);
+          new Envelope(
+            previewSegment,
+            this.gameboard.roadWidth,
+            this.gameboard.roadRoundness
+          ).render(ctx, envelopeStyle);
+        }
       }
       this.selectedPoint.render(ctx, { outline: true });
     }
