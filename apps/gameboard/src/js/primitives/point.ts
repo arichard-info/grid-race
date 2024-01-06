@@ -31,6 +31,10 @@ class Point {
     }
   }
 
+  equals(point: Point): boolean {
+    return this.x === point.x && this.y === point.y;
+  }
+
   static add(p1: Point, p2: Point): Point {
     return new Point(p1.x + p2.x, p1.y + p2.y);
   }
@@ -56,6 +60,28 @@ class Point {
 
   static average(p1: Point, p2: Point): Point {
     return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+  }
+
+  static distance(p1: Point, p2: Point): number {
+    return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+  }
+
+  static getNearest(
+    basePoint: Point,
+    points: Point[],
+    threshold = Number.MAX_SAFE_INTEGER
+  ): Point | null {
+    let minDist = Number.MAX_SAFE_INTEGER;
+    let nearest = null;
+    for (const point of points) {
+      const dist = Point.distance(point, basePoint);
+      if (dist < minDist && dist < threshold) {
+        minDist = dist;
+        nearest = point;
+      }
+    }
+    if (nearest) return nearest;
+    return null;
   }
 }
 

@@ -4,6 +4,7 @@ import Point from "./primitives/point";
 class Viewport {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  pixelRatio: number;
 
   zoom: number;
   center: Point;
@@ -18,11 +19,12 @@ class Viewport {
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.pixelRatio = window.devicePixelRatio;
 
     this.zoom = 1;
     this.center = new Point(
-      canvas.width / 2 / window.devicePixelRatio,
-      canvas.height / 2 / window.devicePixelRatio
+      canvas.width / 2 / this.pixelRatio,
+      canvas.height / 2 / this.pixelRatio
     );
     this.offset = Point.scale(this.center, -1);
 
@@ -38,13 +40,14 @@ class Viewport {
 
   refresh() {
     this.ctx.setTransform(
-      window.devicePixelRatio || 1,
+      this.pixelRatio || 1,
       0,
       0,
-      window.devicePixelRatio || 1,
+      this.pixelRatio || 1,
       0,
       0
     );
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.center.x, this.center.y);
     this.ctx.scale(1 / this.zoom, 1 / this.zoom);
     const offset = this.getOffset();
@@ -52,9 +55,19 @@ class Viewport {
   }
 
   getMouse(event: MouseEvent, subtractDragOffset = false): Point {
+    return this.getRelativePoint(
+      { x: event.offsetX, y: event.offsetY },
+      subtractDragOffset
+    );
+  }
+
+  getRelativePoint(
+    point: { x: number; y: number },
+    subtractDragOffset = false
+  ) {
     const p = new Point(
-      (event.offsetX - this.center.x) * this.zoom - this.offset.x,
-      (event.offsetY - this.center.y) * this.zoom - this.offset.y
+      (point.x - this.center.x) * this.zoom - this.offset.x,
+      (point.y - this.center.y) * this.zoom - this.offset.y
     );
     return subtractDragOffset ? Point.subtract(p, this.drag.offset) : p;
   }

@@ -4,6 +4,8 @@ import Graph from "./geometry/graph";
 import Point from "./primitives/point";
 import Segment from "./primitives/segment";
 import Viewport from "./viewport";
+import FPS from "./fps";
+import Grid from "./grid";
 
 const loadGraph = () => {
   const p1 = new Point(0, 0);
@@ -31,28 +33,42 @@ export const init = (rootElement: HTMLElement) => {
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
   const graph = loadGraph();
+  let oldGraphHash = graph.hash();
 
   const viewport = new Viewport(canvas);
   const gameboard = new Gameboard(viewport, graph);
   const gameEditor = new GameEditor(viewport, gameboard);
+  const grid = new Grid(viewport);
+  const fps = new FPS(viewport);
 
-  const animate = () => {
+  let then = performance.now();
+  let frames = 0;
+  let fpsValue = 0;
+
+  const animate = (timestamp: number) => {
+    const elapsed = timestamp - then;
+    frames++;
+
+    if (elapsed >= 1000) {
+      fpsValue = Math.round((frames * 1000) / elapsed);
+      then = timestamp;
+      frames = 0;
+    }
+
     viewport.refresh();
 
-    ctx.fillStyle = "#E5E5E5";
-    const boundings = viewport.getBoundings();
-    ctx.fillRect(
-      boundings.left,
-      boundings.top,
-      boundings.right - boundings.left,
-      boundings.bottom - boundings.top
-    );
+    if (graph.hash() != oldGraphHash) {
+      gameboard.generate();
+      oldGraphHash = graph.hash();
+    }
 
     gameboard.render(ctx);
+    grid.render(ctx);
     gameEditor.render(ctx);
+    fps.render(ctx, fpsValue);
 
     requestAnimationFrame(animate);
   };
 
-  animate();
+  animate(then);
 };

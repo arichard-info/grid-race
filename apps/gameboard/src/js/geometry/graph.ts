@@ -10,12 +10,46 @@ class Graph {
     this.segments = segments;
   }
 
+  hash() {
+    return JSON.stringify(this);
+  }
+
   addPoint(point: Point) {
     this.points.push(point);
   }
 
+  removePoint(point: Point) {
+    const segments = this.getSegmentsWithPoint(point);
+    for (const segment of segments) {
+      this.removeSegment(segment);
+    }
+    this.points.splice(this.points.indexOf(point), 1);
+  }
+
+  removeSegment(segment: Segment) {
+    this.segments.splice(this.segments.indexOf(segment), 1);
+  }
+
   addSegment(segment: Segment) {
     this.segments.push(segment);
+  }
+
+  getSegmentsWithPoint(point: Point): Segment[] {
+    const segments = [];
+    for (const segment of this.segments) {
+      if (segment.includes(point)) {
+        segments.push(segment);
+      }
+    }
+    return segments;
+  }
+
+  isExtrimity(point: Point): boolean {
+    let count = 0;
+    for (const segment of this.segments) {
+      if (segment.p1 == point || segment.p2 == point) count++;
+    }
+    return count === 1;
   }
 
   render(ctx: CanvasRenderingContext2D) {

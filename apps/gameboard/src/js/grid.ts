@@ -5,7 +5,7 @@ class Grid {
   cellSize: number;
   dotSize: number;
 
-  constructor(viewport: Viewport, { cellSize = 20, dotSize = 3 } = {}) {
+  constructor(viewport: Viewport, { cellSize = 25, dotSize = 3 } = {}) {
     this.viewport = viewport;
     this.cellSize = cellSize;
     this.dotSize = dotSize;

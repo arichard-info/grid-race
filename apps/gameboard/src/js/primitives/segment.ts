@@ -11,6 +11,10 @@ class Segment {
     this.p2 = p2;
   }
 
+  includes(point: Point): boolean {
+    return this.p1.equals(point) || this.p2.equals(point);
+  }
+
   render(
     ctx: CanvasRenderingContext2D,
     { width = 2, color = "black", dash = [] } = {}
@@ -79,6 +83,14 @@ class Segment {
     const dx = point.x - xx;
     const dy = point.y - yy;
     return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  static distanceFromSegment(seg1: Segment, seg2: Segment): number {
+    const dist1 = Segment.distanceFromPoint(seg1.p1, seg2);
+    const dist2 = Segment.distanceFromPoint(seg1.p2, seg2);
+    const dist3 = Segment.distanceFromPoint(seg2.p1, seg1);
+    const dist4 = Segment.distanceFromPoint(seg2.p2, seg1);
+    return Math.min(dist1, dist2, dist3, dist4);
   }
 }
 
