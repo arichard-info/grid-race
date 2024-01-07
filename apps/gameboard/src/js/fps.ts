@@ -18,8 +18,8 @@ class FPS {
     ctx.font = `bold ${this.fontSize * this.viewport.zoom}px Arial`;
     const position = this.viewport.getRelativePoint(
       {
-        x: this.canvas.width - 50,
-        y: this.canvas.height - 10,
+        x: this.canvas.width / this.viewport.pixelRatio - 50,
+        y: this.canvas.height / this.viewport.pixelRatio  - 10,
       },
       true
     );
