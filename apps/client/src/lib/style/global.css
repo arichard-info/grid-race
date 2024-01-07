@@ -16,12 +16,18 @@
 	--font-size-md: 1rem;
 	--font-size-lg: 1.125rem;
 	--font-size-xl: 1.25rem;
+	--font-size-2xl: 1.5rem;
+	--font-size-3xl: 1.875rem;
+	--font-size-4xl: 2.25rem;
 
 	--line-height-xs: 1rem;
 	--line-height-sm: 1.25rem;
 	--line-height-md: 1.5rem;
 	--line-height-lg: 1.75rem;
 	--line-height-xl: 1.75rem;
+	--line-height-2xl: 2rem;
+	--line-height-3xl: 2.25rem;
+	--line-height-4xl: 2.5rem;
 
 	--color-gray-200: #e5e5e5;
 	--color-blue-500: #5693ee;

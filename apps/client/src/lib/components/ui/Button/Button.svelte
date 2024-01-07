@@ -33,6 +33,6 @@
     }
 </style>
 
-<svelte:element this={!!href ? "a" : "button"} class:stretched class={classnames(className, variant)} {href}>
+<svelte:element this={!!href ? "a" : "button"} class:stretched class={classnames(className, variant)} {href} on:click>
     <slot/>
 </svelte:element>

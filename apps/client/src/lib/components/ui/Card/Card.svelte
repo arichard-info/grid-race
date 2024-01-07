@@ -1,4 +1,8 @@
 <script lang="ts">
+	import classnames from "classnames";
+
+    let className = "";
+    export { className as class};
     export let title = "";
 </script>
 
@@ -25,7 +29,7 @@
     }
 </style>
 
-<div class="card">
+<div class={classnames("card", className)}>
     {#if title}
         <div class="header">
             <span>{title}</span>
