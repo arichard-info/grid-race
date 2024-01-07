@@ -9,20 +9,29 @@
 <style>
     main {
         position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         height: 100%;
+        display: flex;
+        align-items: flex-start;
+        padding: var(--spacing-4);
+    }
+
+    section {
+        flex-grow: 1;
+    }
+
+    h1 {
+        text-align: center;
     }
 </style>
 
 <Gameboard />
 
 <main>
-    <Card title="Nouvelle partie">
+    <Card title="Combien de joueurs ?">
         <InputText placeholder="Saisis ton pseudo" stretched powered class="mb-2.5"/>
-        <Button stretched class="mb-2.5">Rejoindre une partie</Button>
-        <Button stretched class="mb-2.5">Créer une partie</Button>
-        <Button stretched href="/local">Jeu Local</Button>
+        <Button stretched>C'est parti !</Button>
     </Card>
+    <section>
+        <h1>Choix du circuit</h1>
+    </section>
 </main>

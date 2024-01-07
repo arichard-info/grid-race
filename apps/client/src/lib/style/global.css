@@ -1,8 +1,47 @@
+:root {
+	--spacing-1: 0.25rem;
+	--spacing-1\.5: 0.375rem;
+	--spacing-2: 0.5rem;
+	--spacing-2\.5: 0.625rem;
+	--spacing-3: 0.75rem;
+	--spacing-3\.5: 0.875rem;
+	--spacing-4: 1rem;
+	--spacing-5: 1.25rem;
+	--spacing-6: 1.5rem;
+	--spacing-7: 1.75rem;
+	--spacing-8: 2rem;
+
+	--font-size-xs: 0.75rem;
+	--font-size-sm: 0.875rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.125rem;
+	--font-size-xl: 1.25rem;
+
+	--line-height-xs: 1rem;
+	--line-height-sm: 1.25rem;
+	--line-height-md: 1.5rem;
+	--line-height-lg: 1.75rem;
+	--line-height-xl: 1.75rem;
+
+	--color-gray-200: #e5e5e5;
+	--color-blue-500: #5693ee;
+
+	--color-bg-default: #ffffff;
+	--color-bg-primary: var(--color-blue-500);
+
+	--color-text-default: #000000;
+	--color-text-secondary: #a0a0a0;
+	--color-text-reversed: #ffffff;
+
+	--color-border-default: #000000;
+	--color-border-reversed: #ffffff;
+}
+
 * {
 	box-sizing: border-box;
 }
 
-html {
+html * {
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -10,4 +49,8 @@ body {
 	margin: 0;
 	height: 100vh;
 	overflow: hidden;
+}
+
+.mb-2\.5 {
+	margin-bottom: var(--spacing-2\.5);
 }

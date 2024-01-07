@@ -5,22 +5,23 @@
 <style>
 
     .card {
-        border: 1px solid #000;
-        background-color: #FFF;
+        border: 1px solid var(--color-border-default);
+        background-color: var(--color-bg-default);
     }
 
     .header {
-        padding: 1rem;
-        background-color: #5693EE;
-        color: #FFF;
+        padding: var(--spacing-4);
+        background-color: var(--color-bg-primary);
+        color: var(--color-text-reversed);
         text-transform: uppercase;
         font-weight: 900;
         font-style: italic;
-        font-size: 1.125rem;
+        font-size: var(--font-size-xl);
+        border-bottom: 1px solid var(--color-border-default);
     }
 
     .body {
-        padding: 1rem;
+        padding: var(--spacing-4);
     }
 </style>
 
