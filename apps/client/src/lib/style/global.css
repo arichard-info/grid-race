@@ -30,10 +30,13 @@
 	--line-height-4xl: 2.5rem;
 
 	--color-gray-200: #e5e5e5;
+	--color-blue-100: #d9e6fb;
 	--color-blue-500: #5693ee;
+	--color-blue-700: #285393;
 
 	--color-bg-default: #ffffff;
 	--color-bg-primary: var(--color-blue-500);
+	--color-bg-secondary: var(--color-blue-100);
 
 	--color-text-default: #000000;
 	--color-text-secondary: #a0a0a0;
@@ -55,6 +58,10 @@ body {
 	margin: 0;
 	height: 100vh;
 	overflow: hidden;
+}
+
+.mt-auto {
+	margin-top: auto;
 }
 
 .mb-2\.5 {

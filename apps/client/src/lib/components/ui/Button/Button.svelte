@@ -1,7 +1,7 @@
 <script lang="ts">
     import classnames from "classnames";
 
-    type ButtonVariant = "primary"
+    type ButtonVariant = "primary" | "secondary"
 
     let className = "";
     export { className as class };
@@ -19,6 +19,10 @@
         cursor: pointer;
         text-align: center;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-1\.5);
     }
 
     .primary {
@@ -27,8 +31,13 @@
         color: var(--color-text-reversed);
     }
 
+    .secondary {
+        border: none;
+        color: var(--color-text-default);
+        background-color: var(--color-bg-secondary);
+    }
+
     .stretched {
-        display: block;
         width: 100%;
     }
 </style>

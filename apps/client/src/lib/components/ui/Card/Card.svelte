@@ -11,6 +11,8 @@
     .card {
         border: 1px solid var(--color-border-default);
         background-color: var(--color-bg-default);
+        display: flex;
+        flex-direction: column;
     }
 
     .header {
@@ -26,6 +28,11 @@
 
     .body {
         padding: var(--spacing-4);
+        flex-grow: 1;
+    }
+
+    .footer {
+        padding: 0 var(--spacing-4) var(--spacing-4);
     }
 </style>
 
@@ -38,4 +45,10 @@
     <div class="body">
         <slot />
     </div>
+
+    {#if $$slots.footer}
+        <div class="footer">
+            <slot name="footer" />
+        </div>
+    {/if}
 </div>

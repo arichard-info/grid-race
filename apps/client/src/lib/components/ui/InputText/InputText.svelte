@@ -4,6 +4,7 @@
     export let placeholder = "";
     export let stretched = false;
     export let powered = false;
+    export let value = "";
 </script>
 
 <style>
@@ -35,4 +36,4 @@
     }
 </style>
 
-<input type="text" {placeholder} class:stretched class:powered class={className}/>
+<input type="text" {placeholder} class:stretched class:powered class={className} bind:value/>

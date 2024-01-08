@@ -1,7 +1,11 @@
 <script lang="ts">
-    type Level = "h1"|"h2"|"h3"
-    type Variant = "h1"|"h2"|"h3"
+	import classnames from "classnames";
 
+    type Level = "h1"|"h2"|"h3"|"span"
+    type Variant = "huge"|"h1"|"h2"|"h3"
+
+    let className = "";
+    export { className as class };
     export let variant: Variant = "h1";
     export let level: Level = "h1";
     export let center = false;
@@ -9,10 +13,17 @@
 </script>
 
 <style>
+    .t {
+        margin: 0;
+    }
 
-.t {
-    margin: 0;
-}
+    .huge {
+        font-size: 3rem;
+        color: var(--color-text-default);
+        font-style: italic;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
 
     .h1 {
         font-size: var(--font-size-4xl);
@@ -32,6 +43,6 @@
     }
 </style>
 
-<svelte:element this={level} class="t {variant}" class:center class:stretched>
+<svelte:element this={level} class={classnames("t", variant, className)} class:center class:stretched>
     <slot/>
 </svelte:element>

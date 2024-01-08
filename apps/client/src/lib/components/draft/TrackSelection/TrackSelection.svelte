@@ -4,7 +4,7 @@
 
 	import TrackPreview from "$lib/components/draft/TrackPreview/TrackPreview.svelte";
 
-    let className = "";
+    let className: string | undefined = undefined;
     export { className as class };
 
     const dispatch = createEventDispatcher();
