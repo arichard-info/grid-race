@@ -1,13 +1,14 @@
 <script lang="ts">
     import classnames from "classnames";
 
-    type ButtonVariant = "primary" | "secondary"
+    type ButtonVariant = "primary" | "secondary" | "primary-reversed"
 
     let className = "";
     export { className as class };
     export let stretched = false;
     export let variant: ButtonVariant = "primary";
     export let href : string | undefined = undefined;
+    export let border = false;
 </script>
 
 <style>
@@ -25,14 +26,25 @@
         gap: var(--spacing-1\.5);
     }
 
+    button:not(.border), a:not(.border) {
+        border: none;
+    }
+
+    .border {
+        border: 1px solid var(--color-border-default);
+    }
+
     .primary {
         background-color: var(--color-bg-primary);
-        border: none;
         color: var(--color-text-reversed);
     }
 
+    .primary-reversed {
+        background-color: var(--color-bg-default);
+        color: var(--color-text-default);
+    }
+
     .secondary {
-        border: none;
         color: var(--color-text-default);
         background-color: var(--color-bg-secondary);
     }
@@ -42,6 +54,7 @@
     }
 </style>
 
-<svelte:element this={!!href ? "a" : "button"} class:stretched class={classnames(className, variant)} {href} on:click>
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<svelte:element this={!!href ? "a" : "button"} class:stretched class:border class={classnames(className, variant)} {href} on:click>
     <slot/>
 </svelte:element>

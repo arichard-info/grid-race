@@ -31,6 +31,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@xstate/svelte": "^3.0.2",
 		"classnames": "^2.5.1",
 		"xstate": "^5.4.1"
 	}

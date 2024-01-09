@@ -1,6 +1,7 @@
-import { createMachine, createActor } from 'xstate';
+import { useMachine } from '@xstate/svelte';
+import { createMachine } from 'xstate';
 
-const templateMachine = createMachine({
+const machine = createMachine({
 	context: {
 		players: [],
 		track: null
@@ -9,30 +10,30 @@ const templateMachine = createMachine({
 	states: {
 		playersSelection: {
 			on: {
-				next: {
+				submit: {
 					target: 'trackSelection'
 				}
 			}
 		},
 		trackSelection: {
-			initial: 'idle',
+			initial: 'choosing',
 			on: {
 				selectPlayers: {
 					target: 'playersSelection'
 				}
 			},
 			states: {
-				idle: {
+				choosing: {
 					on: {
 						draw: {
-							target: 'draw'
+							target: 'drawing'
 						}
 					}
 				},
-				draw: {
+				drawing: {
 					on: {
 						cancel: {
-							target: 'idle'
+							target: 'choosing'
 						}
 					}
 				}
@@ -41,3 +42,5 @@ const templateMachine = createMachine({
 		game: {}
 	}
 });
+
+export const getMachine = () => useMachine(machine);

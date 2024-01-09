@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { useMachine } from "@xstate/svelte"
 	import classNames from "classnames";
 
 	import Stepper from "$lib/components/ui/Stepper/Stepper.svelte";
@@ -12,31 +13,26 @@
 
 	import { getRandomColor } from "$lib/utils";
 
-    enum States {
-        Players = "PLAYERS",
-        Selection = "SELECTION",
-        Draw = "DRAW",
-        Game = "GAME",
-    }
+    import { getMachine } from "./pageMachine";
 
-    let state = States.Players;
+    const machine = getMachine();
+    const machineStore = machine.snapshot;
 
     const handleSubmitPlayers = () => {
-        state = States.Selection;
+        machine.send({ type: "submit" });
     }
 
     const handleNewPlayer = () => {
-        // TODO : Gérer la création de joueurs direct sur le canvas
         if(players.length === MAX_PLAYERS) return;
         players = [...players, { id: players.length + 1 + "", username: `Joueur ${players.length + 1}`, color: getRandomColor()}]
     }
 
     const handleDrawClick = () => {
-        state = States.Draw;
+        machine.send({ type: "draw" });
     }
 
     const handleStepperClick = (event: CustomEvent) => {
-        state = event.detail;
+        machine.send({ type: event.detail });
     }
 
     const MAX_PLAYERS = 6;
@@ -75,13 +71,13 @@
 <Gameboard />
 
 <main>
-    <Stepper on:click={handleStepperClick} currentStep={state} steps={[
-        { label: "1. Grille de départ", value: States.Players}, 
-        { label: "2. Choix du circuit", value: States.Selection },
-        { label: "3. Départ !", value: States.Game}
+    <Stepper on:click={handleStepperClick} steps={[
+        { label: "1. Grille de départ", value: "playersSelection"}, 
+        { label: "2. Choix du circuit", value: "trackSelection"},
+        { label: "3. Départ !", value: "game"}
     ]} />
 
-    {#if state === States.Players}
+    {#if $machineStore.matches("playersSelection")}
         <Card title="Combien de joueurs ?" class="player-selection">
             {#each players as player, index (player.id)}
                 <PlayerSelect username={player.username} color={player.color} class={classNames({ ["mb-2.5"]: index !== MAX_PLAYERS-1})}/>
@@ -96,13 +92,13 @@
         </Card>
     {/if}
     
-    {#if state === States.Selection}
+    {#if $machineStore.matches({ trackSelection: "choosing"})}
         <section>
             <TrackSelection class="tracks" on:draw={handleDrawClick}/>
         </section>
     {/if}
 
-    {#if state === States.Draw}
+    {#if $machineStore.matches({trackSelection: "drawing"})}
     {/if}
 </main>
 

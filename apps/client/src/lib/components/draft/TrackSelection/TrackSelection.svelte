@@ -3,6 +3,8 @@
 	import classnames from "classnames";
 
 	import TrackPreview from "$lib/components/draft/TrackPreview/TrackPreview.svelte";
+	import Button from "$lib/components/ui/Button/Button.svelte";
+	import Icon from "$lib/components/ui/Icon/Icon.svelte";
 
     let className: string | undefined = undefined;
     export { className as class };
@@ -28,6 +30,16 @@
         max-width: 800px;
         margin: auto;
     }
+
+    .buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--spacing-4);
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        margin-top: 2rem;
+    }
 </style>
 
 <div class={classnames("wrapper", className)}>
@@ -37,6 +49,10 @@
         <TrackPreview />
         <TrackPreview />
         <TrackPreview />
-        <TrackPreview on:click={handleDrawClick} />
+        <TrackPreview />
+    </div>
+    <div class="buttons">
+        <Button variant="primary-reversed" on:click={handleDrawClick}><Icon name="pen"/>Editeur de circuit</Button>
+        <Button>C'est parti !</Button>
     </div>
 </div>
