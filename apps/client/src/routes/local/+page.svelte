@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { useMachine } from "@xstate/svelte"
 	import classNames from "classnames";
 
 	import Stepper from "$lib/components/ui/Stepper/Stepper.svelte";
@@ -13,13 +12,20 @@
 
 	import { getRandomColor } from "$lib/utils";
 
-    import { getMachine } from "./pageMachine";
+    const MAX_PLAYERS = 6;
 
-    const machine = getMachine();
-    const machineStore = machine.snapshot;
+    enum States {
+        Players = "PLAYERS",
+        Track = "TRACK",
+        Game = "GAME",
+    }
+
+    let state = States.Players;
+    let trackEditor = false;
+    let players = [{ id: "1", username: "Joueur 1", color: getRandomColor() }];
 
     const handleSubmitPlayers = () => {
-        machine.send({ type: "submit" });
+        state = States.Track;
     }
 
     const handleNewPlayer = () => {
@@ -28,15 +34,16 @@
     }
 
     const handleDrawClick = () => {
-        machine.send({ type: "draw" });
+        trackEditor = true;
     }
 
     const handleStepperClick = (event: CustomEvent) => {
-        machine.send({ type: event.detail });
+        state = event.detail;
     }
 
-    const MAX_PLAYERS = 6;
-    let players = [{ id: "1", username: "Joueur 1", color: getRandomColor() }];
+    const handleTrackSubmit = () => {
+        state = States.Game;
+    }
 </script>
 
 <style>
@@ -46,6 +53,11 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        pointer-events: none;
+    }
+
+    main :global(*) {
+        pointer-events: auto;
     }
 
     main :global(.player-selection) {
@@ -71,13 +83,15 @@
 <Gameboard />
 
 <main>
-    <Stepper on:click={handleStepperClick} steps={[
-        { label: "1. Grille de départ", value: "playersSelection"}, 
-        { label: "2. Choix du circuit", value: "trackSelection"},
-        { label: "3. Départ !", value: "game"}
-    ]} />
+    {#if state !== States.Game}
+        <Stepper on:click={handleStepperClick} currentStep={state} steps={[
+            { label: "1. Pilotes", value: States.Players}, 
+            { label: "2. Circuit", value: States.Track },
+            { label: "3. Départ", value: States.Game}
+        ]} />
+    {/if}
 
-    {#if $machineStore.matches("playersSelection")}
+    {#if state === States.Players}
         <Card title="Combien de joueurs ?" class="player-selection">
             {#each players as player, index (player.id)}
                 <PlayerSelect username={player.username} color={player.color} class={classNames({ ["mb-2.5"]: index !== MAX_PLAYERS-1})}/>
@@ -92,13 +106,15 @@
         </Card>
     {/if}
     
-    {#if $machineStore.matches({ trackSelection: "choosing"})}
-        <section>
-            <TrackSelection class="tracks" on:draw={handleDrawClick}/>
-        </section>
-    {/if}
+    {#if state === States.Track}
+        {#if trackEditor}
 
-    {#if $machineStore.matches({trackSelection: "drawing"})}
+        {:else}
+            <section>
+                <TrackSelection class="tracks" on:draw={handleDrawClick} on:submit={handleTrackSubmit}/>
+            </section>
+        {/if}
+      
     {/if}
 </main>
 

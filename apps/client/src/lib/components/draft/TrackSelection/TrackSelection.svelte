@@ -15,6 +15,10 @@
         dispatch('draw');
     }
 
+    const handleSubmit = () => {
+        dispatch('submit');
+    }
+
 </script>
 
 <style>
@@ -53,6 +57,6 @@
     </div>
     <div class="buttons">
         <Button variant="primary-reversed" on:click={handleDrawClick}><Icon name="pen"/>Editeur de circuit</Button>
-        <Button>C'est parti !</Button>
+        <Button on:click={handleSubmit}>C'est parti !</Button>
     </div>
 </div>

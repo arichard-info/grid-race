@@ -33,7 +33,7 @@
     }
 
     button.active :global(.title) {
-        text-decoration: underline;
+        border-bottom: 3px solid var(--color-border-default);
     }
 
     button:disabled :global(.title) {
