@@ -1,6 +1,11 @@
 import Point from "../primitives/point";
 import Segment from "../primitives/segment";
 
+export type GraphDataObject = {
+  points: { x: number; y: number }[];
+  segments: { p1: { x: number; y: number }; p2: { x: number; y: number } }[];
+};
+
 class Graph {
   points: Point[];
   segments: Segment[];
@@ -60,6 +65,18 @@ class Graph {
     for (const point of this.points) {
       point.render(ctx);
     }
+  }
+
+  static load(graphData: GraphDataObject): Graph {
+    const points = graphData.points.map((i) => new Point(i.x, i.y));
+    const segments = graphData.segments.map(
+      (i) =>
+        new Segment(
+          points.find((p) => p == i.p1) as Point,
+          points.find((p) => p == i.p2) as Point
+        )
+    );
+    return new Graph(points, segments);
   }
 }
 

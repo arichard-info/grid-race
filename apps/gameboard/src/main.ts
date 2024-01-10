@@ -1,5 +1,5 @@
 import "./css/main.css";
 
-import { init } from "./js";
+import Game from "./js";
 
-init(document.getElementById("app") as HTMLElement);
+new Game(document.getElementById("app") as HTMLElement);

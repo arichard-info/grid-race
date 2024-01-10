@@ -1,11 +1,14 @@
 <script lang="ts">
+	import type Game from "gameboard/src/js";
     import { onMount } from "svelte";
+
+    export let game: Game | null = null;
 
     let rootElement: HTMLDivElement | null = null;
 
     onMount(async () => {
-        const canvasModule = await import("gameboard/src/js");
-        canvasModule.init(rootElement as HTMLDivElement)
+        const Game = (await import("gameboard/src/js")).default;
+        game = new Game(rootElement as HTMLDivElement);
     })
 </script>
 

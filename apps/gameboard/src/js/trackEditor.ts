@@ -5,12 +5,12 @@ import Segment from "./primitives/segment";
 import Envelope from "./primitives/envelope";
 
 import Viewport from "./viewport";
-import Gameboard from "./gameboard";
+import Track from "./track";
 
-class GameEditor {
+class TrackEditor {
   canvas: HTMLElement;
   viewport: Viewport;
-  gameboard: Gameboard;
+  track: Track;
   graph: Graph;
 
   selectedPoint: null | Point;
@@ -21,11 +21,11 @@ class GameEditor {
 
   gap: number;
 
-  constructor(viewport: Viewport, gameboard: Gameboard) {
+  constructor(viewport: Viewport, track: Track) {
     this.viewport = viewport;
     this.canvas = viewport.canvas;
-    this.graph = gameboard.graph;
-    this.gameboard = gameboard;
+    this.graph = track.graph;
+    this.track = track;
 
     this.selectedPoint = null;
     this.hoveredPoint = null;
@@ -38,16 +38,25 @@ class GameEditor {
     this.#addEventListeners();
   }
 
-  #addEventListeners() {
-    this.canvas.addEventListener("mousedown", this.#handleMouseDown.bind(this));
-    this.canvas.addEventListener("mousemove", this.#handleMouseMove.bind(this));
-    this.canvas.addEventListener("contextmenu", (event) =>
-      event.preventDefault()
-    );
-    window.addEventListener("keydown", this.#handleKeyDown.bind(this));
-  }
+  #addEventListeners = () => {
+    this.canvas.addEventListener("mousedown", this.#handleMouseDown);
+    this.canvas.addEventListener("mousemove", this.#handleMouseMove);
+    this.canvas.addEventListener("contextmenu", this.#handleContextMenu);
+    window.addEventListener("keydown", this.#handleKeyDown);
+  };
 
-  #handleKeyDown(event: KeyboardEvent) {
+  #removeEventListeners = () => {
+    this.canvas.removeEventListener("mousedown", this.#handleMouseDown);
+    this.canvas.removeEventListener("mousemove", this.#handleMouseMove);
+    this.canvas.removeEventListener("contextmenu", this.#handleContextMenu);
+    window.removeEventListener("keydown", this.#handleKeyDown);
+  };
+
+  #handleContextMenu = (event: Event) => {
+    event.preventDefault();
+  };
+
+  #handleKeyDown = (event: KeyboardEvent) => {
     const key = event.which || event.keyCode || event.charCode;
     switch (key) {
       // Delete or Backspace key
@@ -65,9 +74,9 @@ class GameEditor {
         }
       }
     }
-  }
+  };
 
-  #handleMouseDown(event: MouseEvent) {
+  #handleMouseDown = (event: MouseEvent) => {
     event.preventDefault();
     if (event.button == 0) {
       if (this.hoveredPoint) {
@@ -92,24 +101,22 @@ class GameEditor {
         this.#removePoint(this.hoveredPoint);
       }
     }
-  }
+  };
 
-  #handleMouseMove(event: MouseEvent) {
+  #handleMouseMove = (event: MouseEvent) => {
     this.mouse = this.viewport.getMouse(event, true);
     this.hoveredPoint = Point.getNearest(this.mouse, this.graph.points, 20);
     this.canAddMouseSegment = this.#canAddSegment();
-  }
+  };
 
-  #removePoint(point: Point) {
+  #removePoint = (point: Point) => {
     this.graph.removePoint(point);
-  }
+  };
 
-  #canAddSegment(): boolean {
+  #canAddSegment = (): boolean => {
     if (!this.selectedPoint || !this.mouse) return false;
 
-    if (
-      Point.distance(this.selectedPoint, this.mouse) < this.gameboard.roadWidth
-    ) {
+    if (Point.distance(this.selectedPoint, this.mouse) < this.track.roadWidth) {
       return false;
     }
 
@@ -122,16 +129,20 @@ class GameEditor {
 
       if (
         Segment.distanceFromSegment(newSegment, segment) <=
-        this.gameboard.roadWidth + this.gap
+        this.track.roadWidth + this.gap
       ) {
         return false;
       }
     }
 
     return true;
-  }
+  };
 
-  render(ctx: CanvasRenderingContext2D) {
+  destroy = () => {
+    this.#removeEventListeners();
+  };
+
+  render = (ctx: CanvasRenderingContext2D) => {
     this.graph.render(ctx);
 
     if (this.selectedPoint) {
@@ -154,8 +165,8 @@ class GameEditor {
 
           new Envelope(
             previewSegment,
-            this.gameboard.roadWidth,
-            this.gameboard.roadRoundness
+            this.track.roadWidth,
+            this.track.roadRoundness
           ).render(ctx, envelopeStyle);
         }
       }
@@ -172,7 +183,7 @@ class GameEditor {
     } else {
       this.viewport.canvas.style.cursor = "inherit";
     }
-  }
+  };
 }
 
-export default GameEditor;
+export default TrackEditor;

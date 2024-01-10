@@ -3,12 +3,9 @@ import Graph from "./geometry/graph";
 import Envelope from "./primitives/envelope";
 import Segment from "./primitives/segment";
 
-import Viewport from "./viewport";
 import Polygon from "./primitives/polygon";
-import Background from "./background";
 
-class Gameboard {
-  background: Background;
+class Track {
   graph: Graph;
   envelopes: Envelope[];
   roadBorders: Segment[];
@@ -16,8 +13,7 @@ class Gameboard {
   roadWidth: number;
   roadRoundness: number;
 
-  constructor(viewport: Viewport, graph: Graph) {
-    this.background = new Background(viewport);
+  constructor(graph: Graph) {
     this.graph = graph;
 
     this.roadWidth = 200;
@@ -41,8 +37,6 @@ class Gameboard {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    this.background.render(ctx);
-
     for (const env of this.envelopes) {
       env.render(ctx, { fill: "#FFF", stroke: "#FFF", lineWidth: 0 });
     }
@@ -52,4 +46,4 @@ class Gameboard {
   }
 }
 
-export default Gameboard;
+export default Track;

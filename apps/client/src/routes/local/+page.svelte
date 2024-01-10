@@ -9,8 +9,11 @@
 	import TrackSelection from "$lib/components/draft/TrackSelection/TrackSelection.svelte";
 	import PlayerSelect from "$lib/components/draft/PlayerSelect/PlayerSelect.svelte";
     import Gameboard from "$lib/components/game/Gameboard/Gameboard.svelte";
+	import TrackEditor from "$lib/components/game/TrackEditor/TrackEditor.svelte";
 
 	import { getRandomColor } from "$lib/utils";
+
+	import type Game from "gameboard/src/js";
 
     const MAX_PLAYERS = 6;
 
@@ -20,12 +23,15 @@
         Game = "GAME",
     }
 
+    let gameboard: Game | undefined = undefined;
     let state = States.Players;
     let trackEditor = false;
     let players = [{ id: "1", username: "Joueur 1", color: getRandomColor() }];
+    let track: null = null;
 
     const handleSubmitPlayers = () => {
         state = States.Track;
+        if(!track) trackEditor = false; 
     }
 
     const handleNewPlayer = () => {
@@ -80,7 +86,7 @@
     }
 </style>
 
-<Gameboard />
+<Gameboard bind:game={gameboard}/>
 
 <main>
     {#if state !== States.Game}
@@ -108,7 +114,7 @@
     
     {#if state === States.Track}
         {#if trackEditor}
-
+            <TrackEditor {gameboard}/>
         {:else}
             <section>
                 <TrackSelection class="tracks" on:draw={handleDrawClick} on:submit={handleTrackSubmit}/>

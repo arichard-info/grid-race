@@ -1,69 +1,126 @@
-import Gameboard from "./gameboard";
-import GameEditor from "./gameEditor";
-import Graph from "./geometry/graph";
+import Track from "./track";
+import TrackEditor from "./trackEditor";
+import Graph, { GraphDataObject } from "./geometry/graph";
 import Viewport from "./viewport";
 import FPS from "./fps";
 import Grid from "./grid";
+import Background from "./background";
 
-const loadGraph = () => {
-  return new Graph([], []);
+export const Mode = {
+  Blank: "Blank",
+  Editor: "Editor",
+  Game: "Game",
+  Readonly: "Readonly",
 };
 
-export const init = (rootElement: HTMLElement) => {
-  const canvas = document.createElement("canvas");
-  canvas.id = "gameboard";
+type GameOptions = {
+  mode: string;
+  graphData: GraphDataObject;
+};
 
-  const canvasWidth = rootElement.clientWidth;
-  const canvasHeight = rootElement.clientHeight;
+class Game {
+  mode: string;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  performances: { then: number; frames: number; fpsValue: number };
+  graphHash: string;
 
-  canvas.width = canvasWidth * window.devicePixelRatio;
-  canvas.height = canvasHeight * window.devicePixelRatio;
-  canvas.style.width = canvasWidth + "px";
-  canvas.style.height = canvasHeight + "px";
-  rootElement.appendChild(canvas);
+  graph: Graph;
+  viewport: Viewport;
+  track: Track;
+  trackEditor?: TrackEditor;
+  background: Background;
+  grid: Grid;
+  fps: FPS;
 
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  constructor(rootElement: HTMLElement, options?: GameOptions) {
+    this.mode = options?.mode || Mode.Blank;
 
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.ctx = this.#initCanvas(rootElement);
+    this.canvas = this.ctx.canvas;
 
-  const graph = loadGraph();
-  let oldGraphHash = graph.hash();
+    this.graph = options?.graphData
+      ? Graph.load(options.graphData)
+      : new Graph();
+    this.graphHash = this.graph.hash();
 
-  const viewport = new Viewport(canvas);
-  const gameboard = new Gameboard(viewport, graph);
-  const gameEditor = new GameEditor(viewport, gameboard);
-  const grid = new Grid(viewport);
-  const fps = new FPS(viewport);
+    this.performances = {
+      then: performance.now(),
+      frames: 0,
+      fpsValue: 0,
+    };
 
-  let then = performance.now();
-  let frames = 0;
-  let fpsValue = 0;
+    this.viewport = new Viewport(this.canvas);
+    this.track = new Track(this.graph);
+    this.grid = new Grid(this.viewport);
+    this.fps = new FPS(this.viewport);
+    this.background = new Background(this.viewport);
 
-  const animate = (timestamp: number) => {
-    const elapsed = timestamp - then;
-    frames++;
+    this.#renderLoop(this.performances.then);
+  }
+
+  changeMode(mode: string) {
+    this.mode = mode;
+  }
+
+  #initCanvas(rootElement: HTMLElement): CanvasRenderingContext2D {
+    const canvas = document.createElement("canvas");
+    canvas.id = "gameboard";
+    const canvasWidth = rootElement.clientWidth;
+    const canvasHeight = rootElement.clientHeight;
+
+    canvas.width = canvasWidth * window.devicePixelRatio;
+    canvas.height = canvasHeight * window.devicePixelRatio;
+    canvas.style.width = canvasWidth + "px";
+    canvas.style.height = canvasHeight + "px";
+    rootElement.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    return ctx;
+  }
+
+  #renderLoop(timestamp: number) {
+    const elapsed = timestamp - this.performances.then;
+    this.performances.frames++;
 
     if (elapsed >= 1000) {
-      fpsValue = Math.round((frames * 1000) / elapsed);
-      then = timestamp;
-      frames = 0;
+      this.performances.fpsValue = Math.round(
+        (this.performances.frames * 1000) / elapsed
+      );
+      this.performances.then = timestamp;
+      this.performances.frames = 0;
     }
 
-    viewport.refresh();
+    this.viewport.refresh();
 
-    if (graph.hash() != oldGraphHash) {
-      gameboard.generate();
-      oldGraphHash = graph.hash();
+    if (this.graph.hash() != this.graphHash) {
+      this.track.generate();
+      this.graphHash = this.graph.hash();
     }
 
-    gameboard.render(ctx);
-    grid.render(ctx);
-    gameEditor.render(ctx);
-    fps.render(ctx, fpsValue);
+    this.background.render(this.ctx);
 
-    requestAnimationFrame(animate);
-  };
+    if (this.mode !== Mode.Blank) {
+      this.track.render(this.ctx);
+    }
+    this.grid.render(this.ctx);
+    if (this.mode === Mode.Editor) {
+      if (!this.trackEditor) {
+        this.trackEditor = new TrackEditor(this.viewport, this.track);
+      }
+      this.trackEditor.render(this.ctx);
+    } else {
+      if (this.trackEditor) {
+        this.trackEditor.destroy();
+        delete this.trackEditor;
+      }
+    }
+    this.fps.render(this.ctx, this.performances.fpsValue);
 
-  animate(then);
-};
+    requestAnimationFrame(this.#renderLoop.bind(this));
+  }
+}
+
+export default Game;
