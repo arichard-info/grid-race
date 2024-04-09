@@ -15,6 +15,11 @@ class Segment {
     return this.p1.equals(point) || this.p2.equals(point);
   }
 
+  set(p1: Point, p2: Point) {
+    this.p1 = p1;
+    this.p2 = p2;
+  }
+
   render(
     ctx: CanvasRenderingContext2D,
     { width = 2, color = "black", dash = [] } = {}

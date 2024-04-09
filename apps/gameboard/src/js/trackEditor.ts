@@ -18,6 +18,10 @@ class TrackEditor {
   mouse: null | Point;
 
   canAddMouseSegment: boolean;
+  draggingPoint: null | {
+    initial: Point;
+    current: Point;
+  };
 
   gap: number;
 
@@ -32,6 +36,7 @@ class TrackEditor {
 
     this.mouse = null;
     this.canAddMouseSegment = false;
+    this.draggingPoint = null;
 
     this.gap = 10;
 
@@ -40,6 +45,7 @@ class TrackEditor {
 
   #addEventListeners = () => {
     this.canvas.addEventListener("mousedown", this.#handleMouseDown);
+    this.canvas.addEventListener("mouseup", this.#handleMouseUp);
     this.canvas.addEventListener("mousemove", this.#handleMouseMove);
     this.canvas.addEventListener("contextmenu", this.#handleContextMenu);
     window.addEventListener("keydown", this.#handleKeyDown);
@@ -47,6 +53,7 @@ class TrackEditor {
 
   #removeEventListeners = () => {
     this.canvas.removeEventListener("mousedown", this.#handleMouseDown);
+    this.canvas.removeEventListener("mouseup", this.#handleMouseUp);
     this.canvas.removeEventListener("mousemove", this.#handleMouseMove);
     this.canvas.removeEventListener("contextmenu", this.#handleContextMenu);
     window.removeEventListener("keydown", this.#handleKeyDown);
@@ -80,8 +87,10 @@ class TrackEditor {
     event.preventDefault();
     if (event.button == 0) {
       if (this.hoveredPoint) {
-        // TODO : implement dragging points
-        this.selectedPoint = this.hoveredPoint;
+        this.draggingPoint = {
+          initial: this.hoveredPoint,
+          current: this.hoveredPoint,
+        };
         return;
       }
 
@@ -107,6 +116,19 @@ class TrackEditor {
     this.mouse = this.viewport.getMouse(event, true);
     this.hoveredPoint = Point.getNearest(this.mouse, this.graph.points, 20);
     this.canAddMouseSegment = this.#canAddSegment();
+
+    if (!this.draggingPoint) return;
+
+    this.graph.replacePoint(this.draggingPoint.current, this.mouse);
+    this.draggingPoint.current = this.mouse;
+  };
+
+  #handleMouseUp = () => {
+    this.draggingPoint = null;
+
+    if (this.hoveredPoint) {
+      this.selectedPoint = this.hoveredPoint;
+    }
   };
 
   #removePoint = (point: Point) => {
@@ -116,17 +138,27 @@ class TrackEditor {
   #canAddSegment = (): boolean => {
     if (!this.selectedPoint || !this.mouse) return false;
 
+    // Segment too short
     if (Point.distance(this.selectedPoint, this.mouse) < this.track.roadWidth) {
       return false;
     }
 
     const newSegment = new Segment(this.selectedPoint, this.mouse);
 
+    let segmentsWithSelectedPoint = 0;
     for (const segment of this.graph.segments) {
       if (segment.includes(this.selectedPoint)) {
+        segmentsWithSelectedPoint++;
         continue;
       }
 
+      // Selected point is not extrimity
+      // (you can only add new points from graph extrimity)
+      if (segmentsWithSelectedPoint > 1) {
+        return false;
+      }
+
+      // Point too close from existing road
       if (
         Segment.distanceFromSegment(newSegment, segment) <=
         this.track.roadWidth + this.gap

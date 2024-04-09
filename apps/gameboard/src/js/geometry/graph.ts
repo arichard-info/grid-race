@@ -23,6 +23,21 @@ class Graph {
     this.points.push(point);
   }
 
+  replacePoint(initialPoint: Point, newPoint: Point) {
+    for (const segment of this.segments) {
+      if (segment.p1.equals(initialPoint)) {
+        segment.set(newPoint, segment.p2);
+      }
+
+      if (segment.p2.equals(initialPoint)) {
+        segment.set(segment.p1, newPoint);
+      }
+    }
+
+    this.points.splice(this.points.indexOf(initialPoint), 1);
+    this.points.push(newPoint);
+  }
+
   removePoint(point: Point) {
     const segments = this.getSegmentsWithPoint(point);
     for (const segment of segments) {
