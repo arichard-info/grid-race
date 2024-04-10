@@ -15,6 +15,10 @@ class Graph {
     this.segments = segments;
   }
 
+  clone(): Graph {
+    return new Graph(this.points, this.segments);
+  }
+
   hash() {
     return JSON.stringify(this);
   }

@@ -15,13 +15,12 @@ class TrackEditor {
 
   selectedPoint: null | Point;
   hoveredPoint: null | Point;
+  grabbedPoint: null | Point;
   mouse: null | Point;
 
   canAddMouseSegment: boolean;
-  draggingPoint: null | {
-    initial: Point;
-    current: Point;
-  };
+  mouseDownTime: number | null;
+  movingPoint: boolean;
 
   gap: number;
 
@@ -33,10 +32,12 @@ class TrackEditor {
 
     this.selectedPoint = null;
     this.hoveredPoint = null;
+    this.grabbedPoint = null;
 
     this.mouse = null;
     this.canAddMouseSegment = false;
-    this.draggingPoint = null;
+    this.mouseDownTime = null;
+    this.movingPoint = false;
 
     this.gap = 10;
 
@@ -86,11 +87,9 @@ class TrackEditor {
   #handleMouseDown = (event: MouseEvent) => {
     event.preventDefault();
     if (event.button == 0) {
+      this.mouseDownTime = performance.now();
       if (this.hoveredPoint) {
-        this.draggingPoint = {
-          initial: this.hoveredPoint,
-          current: this.hoveredPoint,
-        };
+        this.grabbedPoint = this.hoveredPoint;
         return;
       }
 
@@ -117,22 +116,45 @@ class TrackEditor {
     this.hoveredPoint = Point.getNearest(this.mouse, this.graph.points, 20);
     this.canAddMouseSegment = this.#canAddSegment();
 
-    if (!this.draggingPoint) return;
+    if (
+      !this.movingPoint &&
+      this.grabbedPoint &&
+      this.mouseDownTime &&
+      performance.now() - this.mouseDownTime > 100 // Make sure a quick click is not considered as dragging
+    ) {
+      this.movingPoint = true;
+    }
 
-    this.graph.replacePoint(this.draggingPoint.current, this.mouse);
-    this.draggingPoint.current = this.mouse;
+    if (this.movingPoint && this.grabbedPoint && this.#canMovePoint()) {
+      this.selectedPoint = null;
+      this.graph.replacePoint(this.grabbedPoint, this.mouse);
+      this.grabbedPoint = this.mouse;
+    }
   };
 
   #handleMouseUp = () => {
-    this.draggingPoint = null;
-
-    if (this.hoveredPoint) {
-      this.selectedPoint = this.hoveredPoint;
+    if (!this.movingPoint && this.grabbedPoint) {
+      this.selectedPoint = this.grabbedPoint;
     }
+    this.movingPoint = false;
+    this.grabbedPoint = null;
+    this.mouseDownTime = null;
   };
 
   #removePoint = (point: Point) => {
     this.graph.removePoint(point);
+  };
+
+  #canMovePoint = (): boolean => {
+    if (!this.mouse || !this.grabbedPoint) return false;
+
+    const newGraph = this.graph.clone();
+    newGraph.replacePoint(this.grabbedPoint, this.mouse);
+
+    // 1. if new point is too close from a road => return false
+    // 2. if a segment in the new graph is too short => return false
+
+    return true;
   };
 
   #canAddSegment = (): boolean => {
