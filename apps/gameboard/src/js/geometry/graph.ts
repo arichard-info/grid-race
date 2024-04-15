@@ -38,8 +38,8 @@ class Graph {
       }
     }
 
-    this.points.splice(this.points.indexOf(initialPoint), 1);
-    this.points.push(newPoint);
+    const index = this.points.indexOf(initialPoint);
+    if(index !== -1) this.points[index] = newPoint;
   }
 
   removePoint(point: Point) {

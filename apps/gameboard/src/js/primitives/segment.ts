@@ -15,9 +15,32 @@ class Segment {
     return this.p1.equals(point) || this.p2.equals(point);
   }
 
+  equals(segment: Segment): boolean {
+    return (this.p1.equals(segment.p1) && this.p2.equals(segment.p2) || (this.p1.equals(segment.p2) && this.p2.equals(segment.p1)))
+  }
+
+  replace(pointToReplace: Point, replacement: Point): Segment {
+    if (this.p1.equals(pointToReplace)) this.p1 = replacement;
+    if (this.p2.equals(pointToReplace)) this.p2 = replacement;
+    return this;
+  }
+
+  angleWithSegment(segment): number {
+    const v1x = this.p1.x - this.p2.x;
+    const v1y = this.p1.y - this.p2.y;
+    const v2x = segment.p1.x - segment.p2.x;
+    const v2y = segment.p1.y - segment.p2.y
+    const angle = Math.abs(Math.atan2(v1x * v2y - v1y * v2x, v1x * v2x + v1y * v2y));
+    return angle * (180 / Math.PI);
+  }
+
   set(p1: Point, p2: Point) {
     this.p1 = p1;
     this.p2 = p2;
+  }
+
+  getLength() {
+    return Point.distance(this.p1, this.p2);
   }
 
   render(

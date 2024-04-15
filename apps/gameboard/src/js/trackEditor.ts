@@ -16,13 +16,15 @@ class TrackEditor {
   selectedPoint: null | Point;
   hoveredPoint: null | Point;
   grabbedPoint: null | Point;
+  mouseDownPoint: null | Point;
   mouse: null | Point;
 
   canAddMouseSegment: boolean;
   mouseDownTime: number | null;
-  movingPoint: boolean;
 
   gap: number;
+  maxAngle: number;
+  grabThreshold: number;
 
   constructor(viewport: Viewport, track: Track) {
     this.viewport = viewport;
@@ -33,13 +35,15 @@ class TrackEditor {
     this.selectedPoint = null;
     this.hoveredPoint = null;
     this.grabbedPoint = null;
+    this.mouseDownPoint = null;
 
     this.mouse = null;
     this.canAddMouseSegment = false;
     this.mouseDownTime = null;
-    this.movingPoint = false;
 
-    this.gap = 10;
+    this.gap = 10; // 10px
+    this.maxAngle = 160; // 160 degrees
+    this.grabThreshold = 100; // 100 ms
 
     this.#addEventListeners();
   }
@@ -49,6 +53,7 @@ class TrackEditor {
     this.canvas.addEventListener("mouseup", this.#handleMouseUp);
     this.canvas.addEventListener("mousemove", this.#handleMouseMove);
     this.canvas.addEventListener("contextmenu", this.#handleContextMenu);
+    window.addEventListener("mouseout", this.#handleMouseUp);
     window.addEventListener("keydown", this.#handleKeyDown);
   };
 
@@ -57,12 +62,20 @@ class TrackEditor {
     this.canvas.removeEventListener("mouseup", this.#handleMouseUp);
     this.canvas.removeEventListener("mousemove", this.#handleMouseMove);
     this.canvas.removeEventListener("contextmenu", this.#handleContextMenu);
+    window.addEventListener("mouseout", this.#handleMouseUp);
     window.removeEventListener("keydown", this.#handleKeyDown);
   };
 
   #handleContextMenu = (event: Event) => {
     event.preventDefault();
   };
+
+  #unselectPoint = () => {
+    this.selectedPoint = null;
+    if (!this.graph.segments.length) {
+      this.graph.points = [];
+    }
+  }
 
   #handleKeyDown = (event: KeyboardEvent) => {
     const key = event.which || event.keyCode || event.charCode;
@@ -86,14 +99,16 @@ class TrackEditor {
 
   #handleMouseDown = (event: MouseEvent) => {
     event.preventDefault();
+
+    // Left Click
     if (event.button == 0) {
       this.mouseDownTime = performance.now();
       if (this.hoveredPoint) {
-        this.grabbedPoint = this.hoveredPoint;
+        this.mouseDownPoint = this.hoveredPoint;
         return;
       }
 
-      if (this.graph.segments.length && !this.canAddMouseSegment) return;
+      if (this.graph.points.length && !this.canAddMouseSegment) return;
       const newPoint = this.viewport.getMouse(event);
       this.graph.addPoint(newPoint);
       if (this.selectedPoint) {
@@ -103,8 +118,11 @@ class TrackEditor {
       return;
     }
 
-    if (event.button === 2) {
-      this.selectedPoint = null;
+    if (
+      event.button === 2 // right click
+      || event.button === 1 // wheel click
+    ) {
+      this.#unselectPoint();
       if (this.hoveredPoint && this.graph.isExtrimity(this.hoveredPoint)) {
         this.#removePoint(this.hoveredPoint);
       }
@@ -117,42 +135,56 @@ class TrackEditor {
     this.canAddMouseSegment = this.#canAddSegment();
 
     if (
-      !this.movingPoint &&
-      this.grabbedPoint &&
+      !this.grabbedPoint &&
+      this.mouseDownPoint &&
       this.mouseDownTime &&
-      performance.now() - this.mouseDownTime > 100 // Make sure a quick click is not considered as dragging
+      performance.now() - this.mouseDownTime > this.grabThreshold // Make sure a quick click is not considered as dragging
     ) {
-      this.movingPoint = true;
+      this.grabbedPoint = this.mouseDownPoint;
     }
 
-    if (this.movingPoint && this.grabbedPoint && this.#canMovePoint()) {
+    if (this.grabbedPoint && this.#canMovePoint()) {
       this.selectedPoint = null;
+      // TODO : don't replace point now but only when mouseup, to avoid graph recalculation on every frame
       this.graph.replacePoint(this.grabbedPoint, this.mouse);
       this.grabbedPoint = this.mouse;
     }
   };
 
   #handleMouseUp = () => {
-    if (!this.movingPoint && this.grabbedPoint) {
-      this.selectedPoint = this.grabbedPoint;
+    if (this.mouseDownPoint && !this.grabbedPoint) {
+      this.selectedPoint = this.mouseDownPoint;
     }
-    this.movingPoint = false;
+    this.mouseDownPoint = null;
     this.grabbedPoint = null;
     this.mouseDownTime = null;
   };
 
   #removePoint = (point: Point) => {
     this.graph.removePoint(point);
+    if (!this.graph.segments?.length) this.graph.points = [];
   };
 
   #canMovePoint = (): boolean => {
-    if (!this.mouse || !this.grabbedPoint) return false;
+    if (!this.mouse || !this.grabbedPoint || !this.mouseDownPoint) return false;
 
-    const newGraph = this.graph.clone();
-    newGraph.replacePoint(this.grabbedPoint, this.mouse);
+    for (const segment of this.graph.segments) {
+      if (!segment.includes(this.grabbedPoint as Point)) {
+        // New point is too close from existing road
+        if (Segment.distanceFromPoint(this.mouse, segment) < this.track.roadWidth + this.gap) return false;
+      } else {
+        const newSegment = new Segment(segment.p1, segment.p2).replace(this.grabbedPoint, this.mouse);
+        // One segment is now too short
+        if (newSegment.getLength() < this.track.roadWidth) return false;
 
-    // 1. if new point is too close from a road => return false
-    // 2. if a segment in the new graph is too short => return false
+        const secondSegment = this.graph.segments.find(seg => !seg.equals(segment) && seg.includes(segment.p1) || seg.includes(segment.p2));
+        if (secondSegment) {
+          const angle = secondSegment.angleWithSegment(newSegment)
+          // Angle is too short
+          if (angle > this.maxAngle) return false;
+        }
+      }
+    }
 
     return true;
   };
@@ -170,14 +202,16 @@ class TrackEditor {
     let segmentsWithSelectedPoint = 0;
     for (const segment of this.graph.segments) {
       if (segment.includes(this.selectedPoint)) {
-        segmentsWithSelectedPoint++;
-        continue;
-      }
 
-      // Selected point is not extrimity
-      // (you can only add new points from graph extrimity)
-      if (segmentsWithSelectedPoint > 1) {
-        return false;
+        // Angle is too short
+        const angle = newSegment.angleWithSegment(segment)
+        if (angle > this.maxAngle) return false;
+        segmentsWithSelectedPoint++;
+
+        // Selected point is not extrimity
+        // (you can only add new points from graph extrimity)
+        if (segmentsWithSelectedPoint > 1) return false;
+        continue;
       }
 
       // Point too close from existing road
@@ -188,7 +222,6 @@ class TrackEditor {
         return false;
       }
     }
-
     return true;
   };
 
@@ -228,14 +261,16 @@ class TrackEditor {
     }
 
     if (this.hoveredPoint) {
-      if (this.graph.isExtrimity(this.hoveredPoint)) {
-        this.viewport.canvas.style.cursor = "pointer";
-      } else {
-        this.viewport.canvas.style.cursor = "grab";
-      }
       this.hoveredPoint?.render(ctx, { color: "#FFF", size: 10 });
+    }
+
+    // Cursor render
+    if (this.grabbedPoint) {
+      this.viewport.canvas.style.cursor = "grabbing";
+    } else if (this.hoveredPoint) {
+      this.viewport.canvas.style.cursor = "grab";
     } else {
-      this.viewport.canvas.style.cursor = "inherit";
+      this.viewport.canvas.style.cursor = "inherit"
     }
   };
 }
