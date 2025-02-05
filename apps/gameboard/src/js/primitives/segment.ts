@@ -16,7 +16,10 @@ class Segment {
   }
 
   equals(segment: Segment): boolean {
-    return (this.p1.equals(segment.p1) && this.p2.equals(segment.p2) || (this.p1.equals(segment.p2) && this.p2.equals(segment.p1)))
+    return (
+      (this.p1.equals(segment.p1) && this.p2.equals(segment.p2)) ||
+      (this.p1.equals(segment.p2) && this.p2.equals(segment.p1))
+    );
   }
 
   replace(pointToReplace: Point, replacement: Point): Segment {
@@ -25,13 +28,39 @@ class Segment {
     return this;
   }
 
-  angleWithSegment(segment): number {
+  angleWithSegment(segment: Segment): number {
     const v1x = this.p1.x - this.p2.x;
     const v1y = this.p1.y - this.p2.y;
     const v2x = segment.p1.x - segment.p2.x;
-    const v2y = segment.p1.y - segment.p2.y
-    const angle = Math.abs(Math.atan2(v1x * v2y - v1y * v2x, v1x * v2x + v1y * v2y));
+    const v2y = segment.p1.y - segment.p2.y;
+    const angle = Math.abs(
+      Math.atan2(v1x * v2y - v1y * v2x, v1x * v2x + v1y * v2y)
+    );
     return angle * (180 / Math.PI);
+  }
+
+  createPerpendicularSegment(point: Point, width: number) {
+    const dx = this.p2.x - this.p1.x;
+    const dy = this.p2.y - this.p1.y;
+
+    const perpDx = -dy;
+    const perpDy = dx;
+
+    const magnitude = Math.sqrt(perpDx * perpDx + perpDy * perpDy);
+    const unitDx = perpDx / magnitude;
+    const unitDy = perpDy / magnitude;
+
+    const halfWidth = width / 2;
+    const p1 = new Point(
+      point.x + unitDx * halfWidth,
+      point.y + unitDy * halfWidth
+    );
+    const p2 = new Point(
+      point.x - unitDx * halfWidth,
+      point.y - unitDy * halfWidth
+    );
+
+    return new Segment(p1, p2);
   }
 
   set(p1: Point, p2: Point) {

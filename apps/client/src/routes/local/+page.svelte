@@ -114,10 +114,10 @@
     
     {#if state === States.Track}
         {#if trackEditor}
-            <TrackEditor {gameboard}/>
+            <TrackEditor {gameboard} />
         {:else}
             <section>
-                <TrackSelection class="tracks" on:draw={handleDrawClick} on:submit={handleTrackSubmit}/>
+                <TrackSelection class="tracks" on:draw={handleDrawClick} on:submit={handleTrackSubmit} />
             </section>
         {/if}
       
