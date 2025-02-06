@@ -1,9 +1,19 @@
 <script lang="ts">
-	import classnames from "classnames";
+	import clsx from "clsx";
+    
+    interface Props {
+        class?: string;
+        title?: string;
+        children?: import('svelte').Snippet;
+        footer?: import('svelte').Snippet;
+    }
 
-    let className = "";
-    export { className as class};
-    export let title = "";
+    let {
+        class: className = "",
+        title = "",
+        children,
+        footer
+    }: Props = $props();
 </script>
 
 <style>
@@ -36,19 +46,19 @@
     }
 </style>
 
-<div class={classnames("card", className)}>
+<div class={clsx("card", className)}>
     {#if title}
         <div class="header">
             <span>{title}</span>
         </div>
     {/if}
     <div class="body">
-        <slot />
+        {@render children?.()}
     </div>
 
-    {#if $$slots.footer}
+    {#if footer}
         <div class="footer">
-            <slot name="footer" />
+            {@render footer?.()}
         </div>
     {/if}
 </div>

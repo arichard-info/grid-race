@@ -1,15 +1,27 @@
 <script lang="ts">
-	import classnames from "classnames";
+	import clsx from "clsx";
 
     type Level = "h1"|"h2"|"h3"|"span"
     type Variant = "huge"|"h1"|"h2"|"h3"
 
-    let className = "";
-    export { className as class };
-    export let variant: Variant = "h1";
-    export let level: Level = "h1";
-    export let center = false;
-    export let stretched = false;
+    
+    interface Props {
+        class?: string;
+        variant?: Variant;
+        level?: Level;
+        center?: boolean;
+        stretched?: boolean;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        class: className = "",
+        variant = "h1",
+        level = "h1",
+        center = false,
+        stretched = false,
+        children
+    }: Props = $props();
 </script>
 
 <style>
@@ -43,6 +55,6 @@
     }
 </style>
 
-<svelte:element this={level} class={classnames("t", variant, className)} class:center class:stretched>
-    <slot/>
+<svelte:element this={level} class={clsx("t", variant, className)} class:center class:stretched>
+    {@render children?.()}
 </svelte:element>

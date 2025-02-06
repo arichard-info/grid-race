@@ -1,6 +1,4 @@
 <script lang="ts">
-	import classNames from "classnames";
-
 	import Stepper from "$lib/components/ui/Stepper/Stepper.svelte";
     import Button from "$lib/components/ui/Button/Button.svelte";
     import Card from "$lib/components/ui/Card/Card.svelte";
@@ -14,23 +12,24 @@
 	import { getRandomColor } from "$lib/utils";
 
 	import type Game from "gameboard/src/js";
+	import clsx from "clsx";
 
     const MAX_PLAYERS = 6;
 
-    enum States {
-        Players = "PLAYERS",
-        Track = "TRACK",
-        Game = "GAME",
+    const States = {
+        Players: "PLAYERS",
+        Track: "TRACK",
+        Game: "GAME",
     }
 
-    let gameboard: Game | undefined = undefined;
-    let state = States.Players;
-    let trackEditor = false;
-    let players = [{ id: "1", username: "Joueur 1", color: getRandomColor() }];
+    let gameboard: Game | undefined = $state(undefined);
+    let gameState = $state(States.Players);
+    let trackEditor = $state(false);
+    let players = $state([{ id: "1", username: "Joueur 1", color: getRandomColor() }]);
     let track: null = null;
 
     const handleSubmitPlayers = () => {
-        state = States.Track;
+        gameState = States.Track;
         if(!track) trackEditor = false; 
     }
 
@@ -43,12 +42,12 @@
         trackEditor = true;
     }
 
-    const handleStepperClick = (event: CustomEvent) => {
-        state = event.detail;
+    const handleStepperClick = (step: string) => {
+        gameState = step;
     }
 
     const handleTrackSubmit = () => {
-        state = States.Game;
+        gameState = States.Game;
     }
 </script>
 
@@ -89,35 +88,37 @@
 <Gameboard bind:game={gameboard}/>
 
 <main>
-    {#if state !== States.Game}
-        <Stepper on:click={handleStepperClick} currentStep={state} steps={[
+    {#if gameState !== States.Game}
+        <Stepper onclick={handleStepperClick} currentStep={gameState} steps={[
             { label: "1. Pilotes", value: States.Players}, 
             { label: "2. Circuit", value: States.Track },
             { label: "3. Départ", value: States.Game}
         ]} />
     {/if}
 
-    {#if state === States.Players}
+    {#if gameState === States.Players}
         <Card title="Combien de joueurs ?" class="player-selection">
             {#each players as player, index (player.id)}
-                <PlayerSelect username={player.username} color={player.color} class={classNames({ ["mb-2.5"]: index !== MAX_PLAYERS-1})}/>
+                <PlayerSelect username={player.username} color={player.color} class={clsx({ ["mb-2.5"]: index !== MAX_PLAYERS-1})}/>
             {/each}
             {#if players.length < MAX_PLAYERS}
-                <Button stretched variant="secondary" on:click={handleNewPlayer} >
+                <Button stretched variant="secondary" onclick={handleNewPlayer} >
                     <Icon name="plus" height="100%" />
                     Ajouter
                 </Button>
             {/if}
-            <Button slot="footer" stretched on:click={handleSubmitPlayers} class="mt-auto">Choix du circuit</Button>
+            {#snippet footer()}
+                        <Button  stretched onclick={handleSubmitPlayers} class="mt-auto">Choix du circuit</Button>
+                    {/snippet}
         </Card>
     {/if}
     
-    {#if state === States.Track}
+    {#if gameState === States.Track}
         {#if trackEditor}
-            <TrackEditor {gameboard} />
+            <TrackEditor {gameboard} onClickCancel={() => trackEditor = false} />
         {:else}
             <section>
-                <TrackSelection class="tracks" on:draw={handleDrawClick} on:submit={handleTrackSubmit} />
+                <TrackSelection class="tracks" onClickDraw={handleDrawClick} onClickSubmit={handleTrackSubmit} />
             </section>
         {/if}
       

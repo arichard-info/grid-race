@@ -1,26 +1,30 @@
 <script lang="ts">
-	import type Game from "gameboard/src/js";
-    import { onMount } from "svelte";
+	import type Game from 'gameboard/src/js';
+	import { onMount } from 'svelte';
 
-    export let game: Game | null = null;
+	interface Props {
+		game?: Game | null;
+	}
 
-    let rootElement: HTMLDivElement | null = null;
+	let { game = $bindable() }: Props = $props();
 
-    onMount(async () => {
-        const Game = (await import("gameboard/src/js")).default;
-        game = new Game(rootElement as HTMLDivElement);
-    })
+	let rootElement: HTMLDivElement | null = $state(null);
+
+	onMount(async () => {
+		const Game = (await import('gameboard/src/js')).default;
+		game = new Game(rootElement as HTMLDivElement);
+	});
 </script>
 
-<style>
-    div {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 0;
-    }
-</style>
+<div bind:this={rootElement}></div>
 
-<div bind:this={rootElement} />
+<style>
+	div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: 0;
+	}
+</style>

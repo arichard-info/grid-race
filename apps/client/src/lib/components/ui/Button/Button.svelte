@@ -1,14 +1,28 @@
 <script lang="ts">
-    import classnames from "classnames";
+	import clsx from "clsx";
 
     type ButtonVariant = "primary" | "secondary" | "primary-reversed"
 
-    let className = "";
-    export { className as class };
-    export let stretched = false;
-    export let variant: ButtonVariant = "primary";
-    export let href : string | undefined = undefined;
-    export let border = false;
+    
+    interface Props {
+        class?: string;
+        stretched?: boolean;
+        variant?: ButtonVariant;
+        href?: string | undefined;
+        border?: boolean;
+        children?: import('svelte').Snippet;
+        onclick?: () => void
+    }
+
+    let {
+        class: className = "",
+        stretched = false,
+        variant = "primary",
+        href = undefined,
+        border = false,
+        children,
+        onclick
+    }: Props = $props();
 </script>
 
 <style>
@@ -54,7 +68,7 @@
     }
 </style>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<svelte:element this={!!href ? "a" : "button"} class:stretched class:border class={classnames(className, variant)} {href} on:click>
-    <slot/>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<svelte:element this={!!href ? "a" : "button"} class:stretched class:border class={clsx(className, variant)} {href} {onclick}>
+    {@render children?.()}
 </svelte:element>
