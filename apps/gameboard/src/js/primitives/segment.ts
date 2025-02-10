@@ -2,6 +2,12 @@ import Point from "./point";
 
 import { lerp } from "../math/utils";
 
+type SegmentRenderOptions = {
+  width?: number;
+  color?: string;
+  dash?: Array<number>;
+};
+
 class Segment {
   p1: Point;
   p2: Point;
@@ -72,14 +78,12 @@ class Segment {
     return Point.distance(this.p1, this.p2);
   }
 
-  render(
-    ctx: CanvasRenderingContext2D,
-    { width = 2, color = "black", dash = [] } = {}
-  ) {
+  render(ctx: CanvasRenderingContext2D, renderOptions?: SegmentRenderOptions) {
+    const { width = 2, color = "black", dash } = renderOptions || {};
     ctx.beginPath();
     ctx.lineWidth = width;
     ctx.strokeStyle = color;
-    ctx.setLineDash(dash);
+    if (dash) ctx.setLineDash(dash);
     ctx.moveTo(this.p1.x, this.p1.y);
     ctx.lineTo(this.p2.x, this.p2.y);
     ctx.stroke();
