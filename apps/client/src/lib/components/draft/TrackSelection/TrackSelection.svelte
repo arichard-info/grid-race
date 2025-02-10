@@ -24,9 +24,9 @@
 		<TrackPreview onclick={() => {}} />
 	</div>
 	<div class="buttons">
-		<Button variant="primary-reversed" onclick={onClickDraw}
-			><Icon name="pen" />Editeur de circuit</Button
-		>
+		<Button variant="primary-reversed" onclick={onClickDraw}>
+			<Icon name="pen" />Editeur de circuit
+		</Button>
 		<Button onclick={onClickSubmit}>C'est parti !</Button>
 	</div>
 </div>
