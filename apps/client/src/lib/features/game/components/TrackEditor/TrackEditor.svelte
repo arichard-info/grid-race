@@ -3,14 +3,15 @@
 
 	import type Game from 'gameboard/src/js';
 	import { Mode } from 'gameboard/src/js';
-	import Button from '$lib/components/ui/Button/Button.svelte';
+	import Button from '$lib/features/shared/components/Button/Button.svelte';
 
 	interface Props {
 		gameboard: Game | undefined;
 		onClickCancel: () => void;
+		onClickSubmit: () => void;
 	}
 
-	let { gameboard, onClickCancel }: Props = $props();
+	let { gameboard, onClickCancel, onClickSubmit }: Props = $props();
 	let initialMode: string | undefined;
 
 	onMount(() => {
@@ -20,14 +21,16 @@
 		}
 	});
 
+	/*
 	onDestroy(() => {
 		if (gameboard && initialMode) gameboard.changeMode(initialMode);
 	});
+	*/
 </script>
 
 <div>
 	<Button variant="primary-reversed" onclick={onClickCancel}>Annuler</Button>
-	<Button>Valider</Button>
+	<Button onclick={onClickSubmit}>Valider</Button>
 </div>
 
 <style>

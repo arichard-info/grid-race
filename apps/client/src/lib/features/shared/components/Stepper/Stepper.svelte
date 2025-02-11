@@ -1,19 +1,20 @@
 <script lang="ts">
-	import Title from '$lib/components/ui/Title/Title.svelte';
+	import Title from '$lib/features/shared/components/Title/Title.svelte';
 
-	type Step = {
+	type Step<T> = {
 		label: string;
-		value: string;
+		value: T;
 	};
-	interface Props {
-		steps?: Step[];
-		currentStep?: string | undefined;
-		onclick?: (step: string) => void;
+
+	interface Props<T> {
+		steps?: Step<T>[];
+		currentStep?: T | undefined;
+		onclick?: (step: T) => void;
 	}
 
-	let { onclick, steps = [], currentStep = undefined }: Props = $props();
+	let { onclick, steps = [], currentStep = undefined }: Props<unknown> = $props();
 
-	const handleClick = (step: string) => () => onclick?.(step);
+	const handleClick = (step: unknown) => () => onclick?.(step);
 
 	let currentStepIndex = $derived(
 		currentStep ? steps.findIndex((s) => s.value === currentStep) : -1

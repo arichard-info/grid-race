@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Icon from '$lib/components/ui/Icon/Icon.svelte';
-	import InputText from '$lib/components/ui/InputText/InputText.svelte';
+	import Icon from '$lib/features/shared/components/Icon/Icon.svelte';
+	import InputText from '$lib/features/shared/components/InputText/InputText.svelte';
 
 	interface Props {
 		class?: string;

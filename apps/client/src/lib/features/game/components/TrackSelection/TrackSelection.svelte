@@ -1,9 +1,9 @@
 <script lang="ts">
 	import clsx from 'clsx';
 
-	import TrackPreview from '$lib/components/draft/TrackPreview/TrackPreview.svelte';
-	import Button from '$lib/components/ui/Button/Button.svelte';
-	import Icon from '$lib/components/ui/Icon/Icon.svelte';
+	import TrackPreviewCard from '$lib/features/shared/components/TrackPreviewCard/TrackPreviewCard.svelte';
+	import Button from '$lib/features/shared/components/Button/Button.svelte';
+	import Icon from '$lib/features/shared/components/Icon/Icon.svelte';
 
 	interface Props {
 		class?: string | undefined;
@@ -16,12 +16,12 @@
 
 <div class={clsx('wrapper', className)}>
 	<div class="inner">
-		<TrackPreview onclick={() => {}} />
-		<TrackPreview onclick={() => {}} />
-		<TrackPreview onclick={() => {}} />
-		<TrackPreview onclick={() => {}} />
-		<TrackPreview onclick={() => {}} />
-		<TrackPreview onclick={() => {}} />
+		<TrackPreviewCard onclick={() => {}} />
+		<TrackPreviewCard onclick={() => {}} />
+		<TrackPreviewCard onclick={() => {}} />
+		<TrackPreviewCard onclick={() => {}} />
+		<TrackPreviewCard onclick={() => {}} />
+		<TrackPreviewCard onclick={() => {}} />
 	</div>
 	<div class="buttons">
 		<Button variant="primary-reversed" onclick={onClickDraw}>

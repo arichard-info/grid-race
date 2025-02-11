@@ -102,6 +102,8 @@ class Game {
 
     this.background.render(this.ctx);
 
+    console.log("==", this.mode);
+
     if (this.mode !== Mode.Blank) {
       this.track.render(this.ctx);
     }
