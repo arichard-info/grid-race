@@ -1,4 +1,4 @@
-import Track from "./track";
+import GraphTrack from "./graphTrack";
 import TrackEditor from "./trackEditor";
 import Graph, { GraphDataObject } from "./geometry/graph";
 import Viewport from "./viewport";
@@ -27,7 +27,7 @@ class Game {
 
   graph: Graph;
   viewport: Viewport;
-  track: Track;
+  track: GraphTrack;
   trackEditor?: TrackEditor;
   background: Background;
   grid: Grid;
@@ -51,7 +51,7 @@ class Game {
     };
 
     this.viewport = new Viewport(this.canvas);
-    this.track = new Track(this.graph);
+    this.track = new GraphTrack(this.graph);
     this.grid = new Grid(this.viewport);
     this.fps = new FPS(this.viewport);
     this.background = new Background(this.viewport);
@@ -101,8 +101,6 @@ class Game {
     }
 
     this.background.render(this.ctx);
-
-    console.log("==", this.mode);
 
     if (this.mode !== Mode.Blank) {
       this.track.render(this.ctx);

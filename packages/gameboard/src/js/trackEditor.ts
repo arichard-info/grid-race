@@ -5,12 +5,12 @@ import Segment from "./primitives/segment";
 import Envelope from "./primitives/envelope";
 
 import Viewport from "./viewport";
-import Track from "./track";
+import GraphTrack from "./graphTrack";
 
 class TrackEditor {
   canvas: HTMLElement;
   viewport: Viewport;
-  track: Track;
+  track: GraphTrack;
   graph: Graph;
 
   selectedPoint: null | Point;
@@ -26,7 +26,7 @@ class TrackEditor {
   maxAngle: number;
   grabThreshold: number;
 
-  constructor(viewport: Viewport, track: Track) {
+  constructor(viewport: Viewport, track: GraphTrack) {
     this.viewport = viewport;
     this.canvas = viewport.canvas;
     this.graph = track.graph;
