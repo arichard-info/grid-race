@@ -4,6 +4,7 @@
 	import type Game from 'gameboard/src/js';
 	import { Mode } from 'gameboard/src/js';
 	import Button from '$lib/features/shared/components/Button/Button.svelte';
+	import type GraphTrack from 'gameboard/src/js/graphTrack';
 
 	interface Props {
 		gameboard: Game | undefined;

@@ -1,12 +1,8 @@
 import { getRandomColor } from '$lib/features/shared/utils';
 import type Game from 'gameboard/src/js';
 import { Mode } from 'gameboard/src/js';
-
-type Player = {
-	username: string;
-	id: string;
-	color: string;
-};
+import type GraphTrack from 'gameboard/src/js/graphTrack';
+import type Track from 'gameboard/src/js/track/track';
 
 export enum State {
 	PLAYER_SELECTION = 'player_selection',
@@ -21,6 +17,8 @@ class LocalGame {
 	gameboard?: Game = $state();
 	players: Array<Player> = $state([]);
 	gameState?: State = $state(State.PLAYER_SELECTION);
+
+	currentPlayerIndex?: number;
 
 	constructor() {
 		this.players = [{ id: '1', username: 'Joueur 1', color: getRandomColor() }];
@@ -40,20 +38,29 @@ class LocalGame {
 		this.gameState = State.TRACK_SELECTION;
 	}
 
-	submitTrackSelection() {
+	startGame(track: Track) {
+		if (!this.gameboard) return;
+		this.gameboard.startGame(track, this.players);
+		this.nextPlayer();
+	}
+
+	nextPlayer() {
+		if (!this.currentPlayerIndex || this.players.length >= this.currentPlayerIndex + 1) {
+			this.currentPlayerIndex = 0;
+		} else this.currentPlayerIndex = this.currentPlayerIndex + 1;
+	}
+
+	submitTrackSelection(track: Track) {
 		if (this.gameState !== State.TRACK_SELECTION) return;
 		this.gameState = State.GAME;
-
-		if (!this.gameboard) return;
-		this.gameboard.changeMode(Mode.Game);
+		this.startGame(track);
 	}
 
 	submitTrackEditor() {
 		if (this.gameState !== State.TRACK_EDITION) return;
-		this.gameState = State.GAME;
-
-		if (!this.gameboard) return;
-		this.gameboard.changeMode(Mode.Game);
+		const track = this.gameboard?.trackEditor?.getTrack();
+		if (!track) return;
+		this.startGame(track);
 	}
 
 	showTrackEditor() {

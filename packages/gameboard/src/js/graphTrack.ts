@@ -5,8 +5,9 @@ import Segment from './primitives/segment';
 import Polygon from './primitives/polygon';
 import Point from './primitives/point';
 import Grid from './grid';
+import Track from './track/track';
 
-class GraphTrack {
+class GraphTrack implements Track {
 	graph: Graph;
 	envelopes: Envelope[];
 	roadBorders: Segment[];

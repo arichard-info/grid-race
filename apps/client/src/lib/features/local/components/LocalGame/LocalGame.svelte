@@ -12,6 +12,9 @@
 	import TrackEditor from '$lib/features/game/components/TrackEditor/TrackEditor.svelte';
 
 	import LocalGame, { State } from '$lib/features/local/stores/localGame.svelte';
+	import LeaderBoardCard from '$lib/features/game/components/LeaderboardCard/LeaderBoardCard.svelte';
+	import GraphTrack from 'gameboard/src/js/graphTrack';
+	import Track from 'gameboard/src/js/track/track';
 
 	const localGame = new LocalGame();
 </script>
@@ -65,17 +68,26 @@
 	{/if}
 
 	{#if localGame.gameState === State.TRACK_SELECTION}
-		<section>
+		<div class="track-selection">
 			<TrackSelection
 				class="tracks"
 				onClickDraw={() => localGame.showTrackEditor()}
-				onClickSubmit={() => localGame.submitTrackSelection()}
+				onClickSubmit={(track: Track) => localGame.submitTrackSelection(track)}
 			/>
-		</section>
+		</div>
+	{/if}
+
+	{#if localGame.gameState === State.GAME}
+		<LeaderBoardCard
+			players={localGame.players}
+			currentPlayerIndex={localGame.currentPlayerIndex}
+			title="Partie locale"
+		/>
 	{/if}
 </main>
 
 <style>
+	/* Global */
 	main {
 		position: relative;
 		height: 100%;
@@ -89,12 +101,15 @@
 		pointer-events: auto;
 	}
 
+	/* Players selection */
+
 	main :global(.player-selection) {
 		margin: auto;
 		min-height: 451px;
 	}
 
-	section {
+	/* Track selection */
+	.track-selection {
 		flex-grow: 1;
 		padding-left: var(--spacing-5);
 		width: 100%;
@@ -103,7 +118,7 @@
 		flex-direction: column;
 	}
 
-	section :global(.tracks) {
+	.track-selection :global(.tracks) {
 		width: 100%;
 		margin: auto;
 	}
