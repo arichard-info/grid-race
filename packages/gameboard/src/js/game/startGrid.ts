@@ -46,6 +46,8 @@ class StartGrid {
 		if (this._hoveredPoint && typeof this._pointClickCallback === 'function') {
 			this._pointClickCallback(this._hoveredPoint);
 		}
+
+		// TODO : handle right click to cancel position selection
 	};
 
 	render(ctx: CanvasRenderingContext2D, options?: { color: string }) {
