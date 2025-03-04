@@ -13,7 +13,6 @@
 
 	import LocalGame, { State } from '$lib/features/local/stores/localGame.svelte';
 	import LeaderBoardCard from '$lib/features/game/components/LeaderboardCard/LeaderBoardCard.svelte';
-	import GraphTrack from 'gameboard/src/js/graphTrack';
 	import Track from 'gameboard/src/js/track/track';
 
 	const localGame = new LocalGame();

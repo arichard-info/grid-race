@@ -1,102 +1,111 @@
-import Point from "../primitives/point";
-import Segment from "../primitives/segment";
+import Point from '../primitives/point';
+import Segment from '../primitives/segment';
 
 export type GraphDataObject = {
-  points: { x: number; y: number }[];
-  segments: { p1: { x: number; y: number }; p2: { x: number; y: number } }[];
+	points: { x: number; y: number }[];
+	segments: { p1: { x: number; y: number }; p2: { x: number; y: number } }[];
 };
 
 class Graph {
-  points: Point[];
-  segments: Segment[];
+	private _points: Point[];
+	private _segments: Segment[];
 
-  constructor(points: Point[] = [], segments: Segment[] = []) {
-    this.points = points;
-    this.segments = segments;
-  }
+	constructor(points: Point[] = [], segments: Segment[] = []) {
+		this._points = points;
+		this._segments = segments;
+	}
 
-  clone(): Graph {
-    return new Graph(this.points, this.segments);
-  }
+	clone(): Graph {
+		return new Graph(this._points, this._segments);
+	}
 
-  hash() {
-    return JSON.stringify(this);
-  }
+	get points() {
+		return this._points;
+	}
 
-  addPoint(point: Point) {
-    this.points.push(point);
-  }
+	get segments() {
+		return this._segments;
+	}
 
-  replacePoint(initialPoint: Point, newPoint: Point) {
-    for (const segment of this.segments) {
-      if (segment.p1.equals(initialPoint)) {
-        segment.set(newPoint, segment.p2);
-      }
+	setPoints(points: Array<Point>) {
+		this._points = points;
+	}
 
-      if (segment.p2.equals(initialPoint)) {
-        segment.set(segment.p1, newPoint);
-      }
-    }
+	hash() {
+		return JSON.stringify(this);
+	}
 
-    const index = this.points.indexOf(initialPoint);
-    if(index !== -1) this.points[index] = newPoint;
-  }
+	addPoint(point: Point) {
+		this._points.push(point);
+	}
 
-  removePoint(point: Point) {
-    const segments = this.getSegmentsWithPoint(point);
-    for (const segment of segments) {
-      this.removeSegment(segment);
-    }
-    this.points.splice(this.points.indexOf(point), 1);
-  }
+	replacePoint(initialPoint: Point, newPoint: Point) {
+		for (const segment of this._segments) {
+			if (segment.p1.equals(initialPoint)) {
+				segment.set(newPoint, segment.p2);
+			}
 
-  removeSegment(segment: Segment) {
-    this.segments.splice(this.segments.indexOf(segment), 1);
-  }
+			if (segment.p2.equals(initialPoint)) {
+				segment.set(segment.p1, newPoint);
+			}
+		}
 
-  addSegment(segment: Segment) {
-    this.segments.push(segment);
-  }
+		const index = this._points.indexOf(initialPoint);
+		if (index !== -1) this._points[index] = newPoint;
+	}
 
-  getSegmentsWithPoint(point: Point): Segment[] {
-    const segments = [];
-    for (const segment of this.segments) {
-      if (segment.includes(point)) {
-        segments.push(segment);
-      }
-    }
-    return segments;
-  }
+	removePoint(point: Point) {
+		const segments = this.getSegmentsWithPoint(point);
+		for (const segment of segments) {
+			this.removeSegment(segment);
+		}
+		this._points.splice(this._points.indexOf(point), 1);
+	}
 
-  isExtrimity(point: Point): boolean {
-    let count = 0;
-    for (const segment of this.segments) {
-      if (segment.p1 == point || segment.p2 == point) count++;
-    }
-    return count === 1;
-  }
+	removeSegment(segment: Segment) {
+		this._segments.splice(this._segments.indexOf(segment), 1);
+	}
 
-  render(ctx: CanvasRenderingContext2D) {
-    for (const seg of this.segments) {
-      seg.render(ctx);
-    }
+	addSegment(segment: Segment) {
+		this._segments.push(segment);
+	}
 
-    for (const point of this.points) {
-      point.render(ctx);
-    }
-  }
+	getSegmentsWithPoint(point: Point): Segment[] {
+		const segments = [];
+		for (const segment of this._segments) {
+			if (segment.includes(point)) {
+				segments.push(segment);
+			}
+		}
+		return segments;
+	}
 
-  static load(graphData: GraphDataObject): Graph {
-    const points = graphData.points.map((i) => new Point(i.x, i.y));
-    const segments = graphData.segments.map(
-      (i) =>
-        new Segment(
-          points.find((p) => p == i.p1) as Point,
-          points.find((p) => p == i.p2) as Point
-        )
-    );
-    return new Graph(points, segments);
-  }
+	isExtrimity(point: Point): boolean {
+		let count = 0;
+		for (const segment of this._segments) {
+			if (segment.p1 == point || segment.p2 == point) count++;
+		}
+		return count === 1;
+	}
+
+	render(ctx: CanvasRenderingContext2D) {
+		for (const seg of this._segments) {
+			seg.render(ctx);
+		}
+
+		for (const point of this._points) {
+			point.render(ctx);
+		}
+	}
+
+	static load(graphData: GraphDataObject): Graph {
+		const points = graphData.points.map((i) => new Point(i.x, i.y));
+		const segments = graphData.segments.map(
+			(i) =>
+				new Segment(points.find((p) => p == i.p1) as Point, points.find((p) => p == i.p2) as Point)
+		);
+		return new Graph(points, segments);
+	}
 }
 
 export default Graph;

@@ -1,10 +1,10 @@
-import Point from './../primitives/point';
 import Grid from './../grid';
+import Point from '../primitives/point';
 
 abstract class Track {
 	abstract generate(): void;
 
-	abstract getStartGrid(grid: Grid): Array<Point>;
+	abstract getStartPositions(grid: Grid): Array<Point>;
 
 	abstract render(ctx: CanvasRenderingContext2D): void;
 }

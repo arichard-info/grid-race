@@ -1,18 +1,18 @@
-import Graph from './geometry/graph';
+import Graph from './../geometry/graph';
 
-import Point from './primitives/point';
-import Segment from './primitives/segment';
-import Envelope from './primitives/envelope';
+import Point from './../primitives/point';
+import Segment from './../primitives/segment';
+import Envelope from './../primitives/envelope';
 
-import Viewport from './viewport';
-import GraphTrack from './graphTrack';
-import Track from './track/track';
+import Viewport from './../viewport';
+import GraphTrack from './../track/graphTrack';
 
 class TrackEditor {
 	canvas: HTMLElement;
 	viewport: Viewport;
 	track: GraphTrack;
 	graph: Graph;
+	trackHash: string;
 
 	selectedPoint: null | Point;
 	hoveredPoint: null | Point;
@@ -27,11 +27,15 @@ class TrackEditor {
 	maxAngle: number;
 	grabThreshold: number;
 
-	constructor(viewport: Viewport, track: GraphTrack) {
+	constructor(viewport: Viewport, track?: GraphTrack) {
 		this.viewport = viewport;
 		this.canvas = viewport.canvas;
-		this.graph = track.graph;
-		this.track = track;
+
+		if (track) this.track = track;
+		else this.track = new GraphTrack();
+
+		this.graph = this.track.getGraph();
+		this.trackHash = this.track.hash();
 
 		this.selectedPoint = null;
 		this.hoveredPoint = null;
@@ -74,7 +78,7 @@ class TrackEditor {
 	#unselectPoint = () => {
 		this.selectedPoint = null;
 		if (!this.graph.segments.length) {
-			this.graph.points = [];
+			this.graph.setPoints([]);
 		}
 	};
 
@@ -178,7 +182,7 @@ class TrackEditor {
 
 	#removePoint = (point: Point) => {
 		this.graph.removePoint(point);
-		if (!this.graph.segments?.length) this.graph.points = [];
+		if (!this.graph.segments?.length) this.graph.setPoints([]);
 	};
 
 	#canMovePoint = (): boolean => {
@@ -243,7 +247,7 @@ class TrackEditor {
 		return true;
 	};
 
-	getTrack(): Track {
+	getTrack(): GraphTrack {
 		return this.track;
 	}
 
@@ -252,6 +256,13 @@ class TrackEditor {
 	};
 
 	render = (ctx: CanvasRenderingContext2D) => {
+		if (this.track.hash() != this.trackHash) {
+			this.track.generate();
+			this.trackHash = this.track.hash();
+		}
+
+		this.track.render(ctx);
+
 		this.graph.render(ctx);
 
 		if (this.selectedPoint) {

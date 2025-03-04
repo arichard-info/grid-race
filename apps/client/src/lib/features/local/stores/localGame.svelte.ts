@@ -1,7 +1,5 @@
 import { getRandomColor } from '$lib/features/shared/utils';
 import type Game from 'gameboard/src/js';
-import { Mode } from 'gameboard/src/js';
-import type GraphTrack from 'gameboard/src/js/graphTrack';
 import type Track from 'gameboard/src/js/track/track';
 
 export enum State {
@@ -40,7 +38,11 @@ class LocalGame {
 
 	startGame(track: Track) {
 		if (!this.gameboard) return;
-		this.gameboard.startGame(track, this.players);
+		this.gameboard.startGame(
+			track,
+			this.players.map((p) => ({ ...p, interactive: true }))
+		);
+		this.gameState = State.GAME;
 		this.nextPlayer();
 	}
 
@@ -58,9 +60,9 @@ class LocalGame {
 
 	submitTrackEditor() {
 		if (this.gameState !== State.TRACK_EDITION) return;
-		const track = this.gameboard?.trackEditor?.getTrack();
-		if (!track) return;
-		this.startGame(track);
+		const editedTrack = this.gameboard?.getEditedTrack();
+		if (!editedTrack) return;
+		this.startGame(editedTrack);
 	}
 
 	showTrackEditor() {

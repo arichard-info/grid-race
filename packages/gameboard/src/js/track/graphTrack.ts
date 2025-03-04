@@ -1,14 +1,14 @@
-import Graph from './geometry/graph';
+import Graph from './../geometry/graph';
 
-import Envelope from './primitives/envelope';
-import Segment from './primitives/segment';
-import Polygon from './primitives/polygon';
-import Point from './primitives/point';
-import Grid from './grid';
-import Track from './track/track';
+import Envelope from './../primitives/envelope';
+import Segment from './../primitives/segment';
+import Polygon from './../primitives/polygon';
+import Point from './../primitives/point';
+import Grid from './../grid';
+import Track from './../track/track';
 
 class GraphTrack implements Track {
-	graph: Graph;
+	private graph: Graph;
 	envelopes: Envelope[];
 	roadBorders: Segment[];
 
@@ -20,11 +20,8 @@ class GraphTrack implements Track {
 	roadWidth: number;
 	roadRoundness: number;
 
-	constructor(graph: Graph, startPoint?: Point, endPoint?: Point) {
-		this.graph = graph;
-
-		this.startPoint = startPoint;
-		this.endPoint = endPoint;
+	constructor() {
+		this.graph = new Graph();
 
 		this.roadWidth = 200;
 		this.roadRoundness = 30;
@@ -33,6 +30,14 @@ class GraphTrack implements Track {
 		this.roadBorders = [];
 
 		this.generate();
+	}
+
+	getGraph() {
+		return this.graph;
+	}
+
+	hash() {
+		return this.graph.hash();
 	}
 
 	generate() {
@@ -62,7 +67,7 @@ class GraphTrack implements Track {
 		this.endPoint = point;
 	}
 
-	getStartGrid(grid: Grid): Array<Point> {
+	getStartPositions(grid: Grid): Array<Point> {
 		if (!this.startPoint) return [];
 		const startSegment = this.graph.segments.find((s) => s.includes(this.startPoint as Point));
 		if (!startSegment) return [];

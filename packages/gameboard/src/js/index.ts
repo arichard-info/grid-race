@@ -1,12 +1,12 @@
-import GraphTrack from './graphTrack';
-import TrackEditor from './trackEditor';
 import Graph, { GraphDataObject } from './geometry/graph';
 import Viewport from './viewport';
 import FPS from './fps';
 import Grid from './grid';
 import Background from './background';
-import Point from './primitives/point';
 import Track from './track/track';
+import GraphTrack from './track/graphTrack';
+import TrackEditor from './track/trackEditor';
+import Game from './game/game';
 
 export const Mode = {
 	Blank: 'Blank',
@@ -20,7 +20,7 @@ type GameOptions = {
 	graphData: GraphDataObject;
 };
 
-class Game {
+class Gameboard {
 	mode: string;
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
@@ -29,8 +29,8 @@ class Game {
 
 	graph: Graph;
 	viewport: Viewport;
-	track: GraphTrack;
 	trackEditor?: TrackEditor;
+	game?: Game;
 	background: Background;
 	grid: Grid;
 	fps: FPS;
@@ -51,7 +51,6 @@ class Game {
 		};
 
 		this.viewport = new Viewport(this.canvas);
-		this.track = new GraphTrack(this.graph);
 		this.grid = new Grid(this.viewport);
 		this.fps = new FPS(this.viewport);
 		this.background = new Background(this.viewport);
@@ -63,8 +62,14 @@ class Game {
 		this.mode = mode;
 	}
 
-	startGame(track: Track, players: Array<{ id: string; color: string }>) {
+	startGame(track: Track, players: Array<{ id: string; color: string; interactive: boolean }>) {
 		this.mode = Mode.Game;
+		this.game = new Game(track, players, this.grid);
+	}
+
+	getEditedTrack(): GraphTrack | undefined {
+		if (this.mode !== Mode.Editor || !this.trackEditor) return;
+		return this.trackEditor.getTrack();
 	}
 
 	#initCanvas(rootElement: HTMLElement): CanvasRenderingContext2D {
@@ -97,21 +102,15 @@ class Game {
 
 		this.viewport.refresh();
 
-		if (this.graph.hash() != this.graphHash) {
-			this.track.generate();
-			this.graphHash = this.graph.hash();
-		}
-
 		this.background.render(this.ctx);
 
-		if (this.mode !== Mode.Blank) {
-			this.track.render(this.ctx);
+		if (this.mode === Mode.Game) {
+			if (!this.game) return;
+			this.game.renderBehindGrid(this.ctx);
 		}
-		this.grid.render(this.ctx);
+
 		if (this.mode === Mode.Editor) {
-			if (!this.trackEditor) {
-				this.trackEditor = new TrackEditor(this.viewport, this.track);
-			}
+			if (!this.trackEditor) this.trackEditor = new TrackEditor(this.viewport);
 			this.trackEditor.render(this.ctx);
 		} else {
 			if (this.trackEditor) {
@@ -119,10 +118,18 @@ class Game {
 				delete this.trackEditor;
 			}
 		}
+
+		this.grid.render(this.ctx);
+
+		if (this.mode === Mode.Game) {
+			if (!this.game) return;
+			this.game.render(this.ctx);
+		}
+
 		this.fps.render(this.ctx, this.performances.fpsValue);
 
 		requestAnimationFrame(this.#renderLoop.bind(this));
 	}
 }
 
-export default Game;
+export default Gameboard;
