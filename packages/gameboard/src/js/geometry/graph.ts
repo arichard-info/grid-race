@@ -1,5 +1,5 @@
-import Point from '../primitives/point';
-import Segment from '../primitives/segment';
+import Point, { PointRenderOptions } from '../primitives/point';
+import Segment, { SegmentRenderOptions } from '../primitives/segment';
 
 export type GraphDataObject = {
 	points: { x: number; y: number }[];
@@ -88,13 +88,17 @@ class Graph {
 		return count === 1;
 	}
 
-	render(ctx: CanvasRenderingContext2D) {
+	render(
+		ctx: CanvasRenderingContext2D,
+		segmentOptions?: SegmentRenderOptions,
+		pointsRenderOptions?: PointRenderOptions
+	) {
 		for (const seg of this._segments) {
-			seg.render(ctx);
+			seg.render(ctx, segmentOptions);
 		}
 
 		for (const point of this._points) {
-			point.render(ctx);
+			point.render(ctx, pointsRenderOptions);
 		}
 	}
 

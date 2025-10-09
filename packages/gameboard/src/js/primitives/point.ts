@@ -1,3 +1,9 @@
+export type PointRenderOptions = {
+	size?: number;
+	color?: string;
+	outline?: boolean;
+};
+
 class Point {
 	private _x: number;
 	private _y: number;
@@ -17,7 +23,7 @@ class Point {
 
 	render(
 		ctx: CanvasRenderingContext2D,
-		{ size = 18, color = 'black', outline = false, fill = false } = {}
+		{ size = 18, color = 'black', outline = false }: PointRenderOptions = {}
 	) {
 		const rad = size / 2;
 		ctx.beginPath();
@@ -30,12 +36,6 @@ class Point {
 			ctx.strokeStyle = 'yellow';
 			ctx.arc(this._x, this._y, rad * 0.6, 0, Math.PI * 2);
 			ctx.stroke();
-		}
-		if (fill) {
-			ctx.beginPath();
-			ctx.arc(this._x, this._y, rad * 0.4, 0, Math.PI * 2);
-			ctx.fillStyle = 'yellow';
-			ctx.fill();
 		}
 	}
 
