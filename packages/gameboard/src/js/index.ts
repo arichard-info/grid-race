@@ -87,6 +87,8 @@ class Gameboard {
 		const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 		ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
+		canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
 		return ctx;
 	}
 

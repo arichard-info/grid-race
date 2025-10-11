@@ -70,6 +70,10 @@ class Segment {
 		return Point.distance(this.p1, this.p2);
 	}
 
+	getVector() {
+		return new Vector(this.p2.x - this.p1.x, this.p2.y - this.p1.y);
+	}
+
 	render(ctx: CanvasRenderingContext2D, renderOptions?: SegmentRenderOptions) {
 		const { width = 2, color = 'black', dash } = renderOptions || {};
 		ctx.beginPath();

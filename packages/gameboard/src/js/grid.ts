@@ -19,6 +19,19 @@ class Grid {
 		return new Point(nearestX, nearestY);
 	}
 
+	getPointsAround(point: Point): Array<Point> {
+		return [
+			new Point(point.x - this.cellSize, point.y - this.cellSize),
+			new Point(point.x, point.y - this.cellSize),
+			new Point(point.x + this.cellSize, point.y - this.cellSize),
+			new Point(point.x - this.cellSize, point.y),
+			new Point(point.x + this.cellSize, point.y),
+			new Point(point.x - this.cellSize, point.y + this.cellSize),
+			new Point(point.x, point.y + this.cellSize),
+			new Point(point.x + this.cellSize, point.y + this.cellSize)
+		];
+	}
+
 	render(ctx: CanvasRenderingContext2D) {
 		const boundings = this.viewport.getBoundings();
 		const minX = Math.ceil(boundings.left / this.cellSize) * this.cellSize;

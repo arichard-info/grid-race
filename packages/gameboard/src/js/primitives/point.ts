@@ -43,6 +43,10 @@ class Point {
 		return this._x === point.x && this._y === point.y;
 	}
 
+	addVector(v: Vector): Point {
+		return new Point(this._x + v.x, this._y + v.y);
+	}
+
 	static add(p1: Point, p2: Point): Point {
 		return new Point(p1.x + p2.x, p1.y + p2.y);
 	}
